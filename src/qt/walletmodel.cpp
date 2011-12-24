@@ -245,6 +245,11 @@ bool WalletModel::backupWallet(const QString &filename)
     return BackupWallet(*wallet, filename.toLocal8Bit().data());
 }
 
+void WalletModel::setSendFromAddressRestriction(std::string addresses)
+{
+    wallet->setSendFromAddressRestriction(addresses);
+}
+
 // WalletModel::UnlockContext implementation
 WalletModel::UnlockContext WalletModel::requestUnlock()
 {

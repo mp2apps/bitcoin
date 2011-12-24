@@ -23,6 +23,8 @@
 #include "guiconstants.h"
 #include "askpassphrasedialog.h"
 #include "notificator.h"
+#include "coincontrolpage.h"
+#include "guiutil.h"
 
 #ifdef Q_WS_MAC
 #include "macdockiconhandler.h"
@@ -108,6 +110,9 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     messagePage = new MessagePage(this);
 
+    coinControlPage = new CoinControlPage(this);
+    coinControlPage->setFont(GUIUtil::bitcoinAddressFont());
+
     centralWidget = new QStackedWidget(this);
     centralWidget->addWidget(overviewPage);
     centralWidget->addWidget(transactionsPage);
@@ -117,6 +122,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 #ifdef FIRST_CLASS_MESSAGING
     centralWidget->addWidget(messagePage);
 #endif
+    centralWidget->addWidget(coinControlPage);
     setCentralWidget(centralWidget);
 
     // Create status bar
@@ -212,6 +218,12 @@ void BitcoinGUI::createActions()
 #endif
     tabGroup->addAction(messageAction);
 
+    coinControlAction = new QAction(QIcon(":/icons/history"), tr("&Coin Control"), this);
+    coinControlAction->setToolTip(tr("See address linkages"));
+    coinControlAction->setCheckable(true);
+    coinControlAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
+    tabGroup->addAction(coinControlAction);
+
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(showNormal()));
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(gotoOverviewPage()));
     connect(historyAction, SIGNAL(triggered()), this, SLOT(showNormal()));
@@ -224,6 +236,8 @@ void BitcoinGUI::createActions()
     connect(sendCoinsAction, SIGNAL(triggered()), this, SLOT(gotoSendCoinsPage()));
     connect(messageAction, SIGNAL(triggered()), this, SLOT(showNormal()));
     connect(messageAction, SIGNAL(triggered()), this, SLOT(gotoMessagePage()));
+    connect(coinControlAction, SIGNAL(triggered()), this, SLOT(showNormal()));
+    connect(coinControlAction, SIGNAL(triggered()), this, SLOT(gotoCoinControlPage()));
 
     quitAction = new QAction(QIcon(":/icons/quit"), tr("E&xit"), this);
     quitAction->setToolTip(tr("Quit application"));
@@ -303,6 +317,7 @@ void BitcoinGUI::createToolBars()
 #ifdef FIRST_CLASS_MESSAGING
     toolbar->addAction(messageAction);
 #endif
+    toolbar->addAction(coinControlAction);
 
     QToolBar *toolbar2 = addToolBar(tr("Actions toolbar"));
     toolbar2->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
@@ -369,6 +384,14 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel)
         // Ask for passphrase if needed
         connect(walletModel, SIGNAL(requireUnlock()), this, SLOT(unlockWallet()));
     }
+
+    connect(walletModel->getOptionsModel(), SIGNAL(coinControlFeaturesChanged(bool)), this, SLOT(toggleCoinControlTab(bool)));
+    toggleCoinControlTab(walletModel->getOptionsModel()->getCoinControlFeatures());
+}
+
+void BitcoinGUI::toggleCoinControlTab(bool show)
+{
+    coinControlAction->setVisible(show);
 }
 
 void BitcoinGUI::createTrayIcon()
@@ -687,6 +710,13 @@ void BitcoinGUI::gotoReceiveCoinsPage()
 
 void BitcoinGUI::gotoSendCoinsPage()
 {
+    if (!coinControlPage->selectedAddresses().empty()) {
+      sendCoinsPage->setSendFromAddress(coinControlPage->selectedAddresses());
+      coinControlPage->clearSelection();
+    }
+
+    show();  // TODOcoderrr: still need this?
+
     sendCoinsAction->setChecked(true);
     centralWidget->setCurrentWidget(sendCoinsPage);
 
@@ -712,6 +742,16 @@ void BitcoinGUI::gotoMessagePage(QString addr)
 {
     gotoMessagePage();
     messagePage->setAddress(addr);
+}
+
+void BitcoinGUI::gotoCoinControlPage()
+{
+    coinControlAction->setChecked(true);
+    centralWidget->setCurrentWidget(coinControlPage);
+    coinControlPage->UpdateTable();
+
+    exportAction->setEnabled(false);
+    disconnect(exportAction, SIGNAL(triggered()), 0, 0);
 }
 
 void BitcoinGUI::dragEnterEvent(QDragEnterEvent *event)

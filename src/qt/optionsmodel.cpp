@@ -8,12 +8,14 @@ OptionsModel::OptionsModel(CWallet *wallet, QObject *parent) :
     QAbstractListModel(parent),
     wallet(wallet),
     nDisplayUnit(BitcoinUnits::BTC),
-    bDisplayAddresses(false)
+    bDisplayAddresses(false),
+    bCoinControlFeatures(false)
 {
     // Read our specific settings from the wallet db
     CWalletDB walletdb(wallet->strWalletFile);
     walletdb.ReadSetting("nDisplayUnit", nDisplayUnit);
     walletdb.ReadSetting("bDisplayAddresses", bDisplayAddresses);
+    walletdb.ReadSetting("bCoinControlFeatures", bCoinControlFeatures);
 }
 
 int OptionsModel::rowCount(const QModelIndex & parent) const
@@ -47,6 +49,8 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
             return QVariant(nDisplayUnit);
         case DisplayAddresses:
             return QVariant(bDisplayAddresses);
+        case CoinControlFeatures:
+            return QVariant(bCoinControlFeatures);
         default:
             return QVariant();
         }
@@ -128,6 +132,11 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
             bDisplayAddresses = value.toBool();
             walletdb.WriteSetting("bDisplayAddresses", bDisplayAddresses);
             }
+        case CoinControlFeatures: {
+            bCoinControlFeatures = value.toBool();
+            walletdb.WriteSetting("bCoinControlFeatures", bCoinControlFeatures);
+            emit coinControlFeaturesChanged(bCoinControlFeatures);
+            }
         default:
             break;
         }
@@ -160,4 +169,9 @@ int OptionsModel::getDisplayUnit()
 bool OptionsModel::getDisplayAddresses()
 {
     return bDisplayAddresses;
+}
+
+bool OptionsModel::getCoinControlFeatures()
+{
+  return bCoinControlFeatures;
 }

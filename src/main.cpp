@@ -57,7 +57,6 @@ CScript COINBASE_FLAGS;
 
 const string strMessageMagic = "Bitcoin Signed Message:\n";
 
-
 double dHashesPerSec;
 int64 nHPSTimerStart;
 
@@ -165,8 +164,6 @@ void static ResendWalletTransactions()
     BOOST_FOREACH(CWallet* pwallet, setpwalletRegistered)
         pwallet->ResendWalletTransactions();
 }
-
-
 
 
 
