@@ -45,6 +45,7 @@ bool OpenNetworkConnection(const CAddress& addrConnect);
 //
 bool fClient = false;
 bool fAllowDNS = false;
+static bool fUseUPnP = false;
 uint64 nLocalServices = (fClient ? 0 : NODE_NETWORK);
 CAddress addrLocalHost(CService("0.0.0.0", 0), nLocalServices);
 static CNode* pnodeLocalHost = NULL;
@@ -1054,7 +1055,6 @@ void MapPort(bool fMapPort)
     if (fUseUPnP != fMapPort)
     {
         fUseUPnP = fMapPort;
-        WriteSetting("fUseUPnP", fUseUPnP);
     }
     if (fUseUPnP && vnThreadsRunning[5] < 1)
     {
@@ -1663,6 +1663,14 @@ bool BindListenPort(string& strError)
 
 void StartNode(void* parg)
 {
+#ifdef USE_UPNP
+#if USE_UPNP
+    fUseUPnP = GetBoolArg("-upnp", true);
+#else
+    fUseUPnP = GetBoolArg("-upnp", false);
+#endif
+#endif
+
     if (pnodeLocalHost == NULL)
         pnodeLocalHost = new CNode(INVALID_SOCKET, CAddress(CService("127.0.0.1", 0), nLocalServices));
 
@@ -1764,7 +1772,7 @@ void StartNode(void* parg)
         printf("Error: CreateThread(ThreadMessageHandler) failed\n");
 
     // Generate coins in the background
-    GenerateBitcoins(fGenerateBitcoins, pwalletMain);
+    GenerateBitcoins(GetBoolArg("-gen", false), pwalletMain);
 }
 
 bool StopNode()
