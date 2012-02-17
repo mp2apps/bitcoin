@@ -160,7 +160,19 @@ int main(int argc, char *argv[])
     Q_INIT_RESOURCE(bitcoin);
     QApplication app(argc, argv);
 
+    // Command-line options take precedence:
     ParseParameters(argc, argv);
+
+    // ... then bitcoin.conf:
+    if (!ReadConfigFile(mapArgs, mapMultiArgs))
+    {
+        fprintf(stderr, "Error: Specified directory does not exist\n");
+        return 1;
+    }
+
+    // ... then GUI settings:
+    OptionsModel optionsModel;
+
 
     // Load language files for system locale:
     // - First load the translator for the base language, without territory
@@ -186,6 +198,8 @@ int main(int argc, char *argv[])
     if (!translator.isEmpty())
         app.installTranslator(&translator);
 
+    app.setOrganizationName("Bitcoin");
+    app.setOrganizationDomain("bitcoin.org");
     app.setApplicationName(QApplication::translate("main", "Bitcoin-Qt"));
 
     QSplashScreen splash(QPixmap(":/images/splash"), 0);
@@ -206,7 +220,6 @@ int main(int argc, char *argv[])
                 // calling Shutdown() in case of exceptions.
                 BitcoinGUI window;
                 splash.finish(&window);
-                OptionsModel optionsModel(pwalletMain);
                 ClientModel clientModel(&optionsModel);
                 WalletModel walletModel(pwalletMain, &optionsModel);
 
