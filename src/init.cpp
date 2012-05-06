@@ -22,6 +22,7 @@ using namespace std;
 using namespace boost;
 
 CWallet* pwalletMain;
+CClientUIInterface uiInterface;
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -90,9 +91,33 @@ void HandleSIGTERM(int)
 // Start
 //
 #if !defined(QT_GUI)
+static int noui_ThreadSafeMessageBox(const std::string& message, const std::string& caption, int style)
+{
+    printf("%s: %s\n", caption.c_str(), message.c_str());
+    fprintf(stderr, "%s: %s\n", caption.c_str(), message.c_str());
+    return 4;
+}
+
+static bool noui_ThreadSafeAskFee(int64 nFeeRequired, const std::string& strCaption)
+{
+    return true;
+}
+
+static void noui_QueueShutdown()
+{
+    // Without UI, Shutdown can simply be started in a new thread
+    CreateThread(Shutdown, NULL);
+}
+
 int main(int argc, char* argv[])
 {
     bool fRet = false;
+
+    // Connect bitcoind signal handlers
+    uiInterface.ThreadSafeMessageBox.connect(noui_ThreadSafeMessageBox);
+    uiInterface.ThreadSafeAskFee.connect(noui_ThreadSafeAskFee);
+    uiInterface.QueueShutdown.connect(noui_QueueShutdown);
+
     fRet = AppInit(argc, argv);
 
     if (fRet && fDaemon)
@@ -338,7 +363,7 @@ bool AppInit2(int argc, char* argv[])
     static boost::interprocess::file_lock lock(pathLockFile.string().c_str());
     if (!lock.try_lock())
     {
-        ThreadSafeMessageBox(strprintf(_("Cannot obtain a lock on data directory %s.  Bitcoin is probably already running."), GetDataDir().string().c_str()), _("Bitcoin"), wxOK|wxMODAL);
+        uiInterface.ThreadSafeMessageBox(strprintf(_("Cannot obtain a lock on data directory %s.  Bitcoin is probably already running."), GetDataDir().string().c_str()), _("Bitcoin"), MF_OK|MF_MODAL);
         return false;
     }
 
@@ -350,14 +375,14 @@ bool AppInit2(int argc, char* argv[])
         fprintf(stdout, "bitcoin server starting\n");
     int64 nStart;
 
-    InitMessage(_("Loading addresses..."));
+    uiInterface.InitMessage(_("Loading addresses..."));
     printf("Loading addresses...\n");
     nStart = GetTimeMillis();
     if (!LoadAddresses())
         strErrors << _("Error loading addr.dat") << "\n";
     printf(" addresses   %15"PRI64d"ms\n", GetTimeMillis() - nStart);
 
-    InitMessage(_("Loading block index..."));
+    uiInterface.InitMessage(_("Loading block index..."));
     printf("Loading block index...\n");
     nStart = GetTimeMillis();
     if (!LoadBlockIndex())
@@ -383,7 +408,7 @@ bool AppInit2(int argc, char* argv[])
         }
     }
 
-    InitMessage(_("Loading wallet..."));
+    uiInterface.InitMessage(_("Loading wallet..."));
     printf("Loading wallet...\n");
     nStart = GetTimeMillis();
     bool fFirstRun;
@@ -399,7 +424,7 @@ bool AppInit2(int argc, char* argv[])
         {
             strErrors << _("Wallet needed to be rewritten: restart Bitcoin to complete") << "\n";
             printf("%s", strErrors.str().c_str());
-            ThreadSafeMessageBox(strErrors.str(), _("Bitcoin"), wxOK | wxICON_ERROR | wxMODAL);
+            uiInterface.ThreadSafeMessageBox(strErrors.str(), _("Bitcoin"), MF_OK | MF_ICON_ERROR | MF_MODAL);
             return false;
         }
         else
@@ -452,14 +477,14 @@ bool AppInit2(int argc, char* argv[])
     }
     if (pindexBest != pindexRescan)
     {
-        InitMessage(_("Rescanning..."));
+        uiInterface.InitMessage(_("Rescanning..."));
         printf("Rescanning last %i blocks (from block %i)...\n", pindexBest->nHeight - pindexRescan->nHeight, pindexRescan->nHeight);
         nStart = GetTimeMillis();
         pwalletMain->ScanForWalletTransactions(pindexRescan, true);
         printf(" rescan      %15"PRI64d"ms\n", GetTimeMillis() - nStart);
     }
 
-    InitMessage(_("Done loading"));
+    uiInterface.InitMessage(_("Done loading"));
     printf("Done loading\n");
 
     //// debug print
@@ -471,7 +496,7 @@ bool AppInit2(int argc, char* argv[])
 
     if (!strErrors.str().empty())
     {
-        ThreadSafeMessageBox(strErrors.str(), _("Bitcoin"), wxOK | wxICON_ERROR | wxMODAL);
+        uiInterface.ThreadSafeMessageBox(strErrors.str(), _("Bitcoin"), MF_OK | MF_ICON_ERROR | MF_MODAL);
         return false;
     }
 
@@ -527,7 +552,7 @@ bool AppInit2(int argc, char* argv[])
         addrProxy = CService(mapArgs["-proxy"], 9050);
         if (!addrProxy.IsValid())
         {
-            ThreadSafeMessageBox(_("Invalid -proxy address"), _("Bitcoin"), wxOK | wxMODAL);
+            uiInterface.ThreadSafeMessageBox(_("Invalid -proxy address"), _("Bitcoin"), MF_OK | MF_MODAL);
             return false;
         }
     }
@@ -568,7 +593,7 @@ bool AppInit2(int argc, char* argv[])
         std::string strError;
         if (!BindListenPort(strError))
         {
-            ThreadSafeMessageBox(strError, _("Bitcoin"), wxOK | wxMODAL);
+            uiInterface.ThreadSafeMessageBox(strError, _("Bitcoin"), MF_OK | MF_MODAL);
             return false;
         }
     }
@@ -583,11 +608,11 @@ bool AppInit2(int argc, char* argv[])
     {
         if (!ParseMoney(mapArgs["-paytxfee"], nTransactionFee))
         {
-            ThreadSafeMessageBox(_("Invalid amount for -paytxfee=<amount>"), _("Bitcoin"), wxOK | wxMODAL);
+            uiInterface.ThreadSafeMessageBox(_("Invalid amount for -paytxfee=<amount>"), _("Bitcoin"), MF_OK | MF_MODAL);
             return false;
         }
         if (nTransactionFee > 0.25 * COIN)
-            ThreadSafeMessageBox(_("Warning: -paytxfee is set very high.  This is the transaction fee you will pay if you send a transaction."), _("Bitcoin"), wxOK | wxICON_EXCLAMATION | wxMODAL);
+            uiInterface.ThreadSafeMessageBox(_("Warning: -paytxfee is set very high.  This is the transaction fee you will pay if you send a transaction."), _("Bitcoin"), MF_OK | MF_ICON_EXCLAMATION | MF_MODAL);
     }
 
     //
@@ -599,7 +624,7 @@ bool AppInit2(int argc, char* argv[])
     RandAddSeedPerfmon();
 
     if (!CreateThread(StartNode, NULL))
-        ThreadSafeMessageBox(_("Error: CreateThread(StartNode) failed"), _("Bitcoin"), wxOK | wxMODAL);
+        uiInterface.ThreadSafeMessageBox(_("Error: CreateThread(StartNode) failed"), _("Bitcoin"), MF_OK | MF_MODAL);
 
     if (fServer)
         CreateThread(ThreadRPCServer, NULL);
