@@ -62,6 +62,15 @@ contains(USE_DBUS, 1) {
     QT += dbus
 }
 
+# use: qmake "USE_UNITY=1"
+# needs packages: libunity-dev libdbusmenu-qt-dev
+contains(USE_UNITY, 1) {
+    message(Building with Unity (Ubuntu) support)
+    DEFINES += USE_UNITY
+    CONFIG += link_pkgconfig
+    PKGCONFIG += dbusmenu-qt unity
+}
+
 # use: qmake "FIRST_CLASS_MESSAGING=1"
 contains(FIRST_CLASS_MESSAGING, 1) {
     message(Building with first-class messaging)
