@@ -14,6 +14,9 @@ class SendCoinsDialog;
 class MessagePage;
 class Notificator;
 class RPCConsole;
+#ifdef USE_UNITY
+class UnityDockIconHandler;
+#endif
 
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -93,6 +96,9 @@ private:
 
     QSystemTrayIcon *trayIcon;
     Notificator *notificator;
+#ifdef USE_UNITY
+    UnityDockIconHandler *unityDock;
+#endif
     TransactionView *transactionView;
     RPCConsole *rpcConsole;
 

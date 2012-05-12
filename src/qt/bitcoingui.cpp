@@ -30,7 +30,9 @@
 #ifdef Q_WS_MAC
 #include "macdockiconhandler.h"
 #endif
-
+#ifdef USE_UNITY
+#include "unitydockiconhandler.h"
+#endif
 #include <QApplication>
 #include <QMainWindow>
 #include <QMenuBar>
@@ -58,6 +60,7 @@
 
 #include <iostream>
 
+
 BitcoinGUI::BitcoinGUI(QWidget *parent):
     QMainWindow(parent),
     clientModel(0),
@@ -67,6 +70,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     aboutQtAction(0),
     trayIcon(0),
     notificator(0),
+    unityDock(0),
     rpcConsole(0)
 {
     resize(850, 550);
@@ -78,6 +82,10 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     setUnifiedTitleAndToolBarOnMac(true);
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
+#ifdef USE_UNITY
+    unityDock = new UnityDockIconHandler("bitcoin-qt.desktop", this);
+#endif
+
     // Accept D&D of URIs
     setAcceptDrops(true);
 
