@@ -349,9 +349,20 @@ void BitcoinGUI::setClientModel(ClientModel *clientModel)
             if(trayIcon)
             {
                 trayIcon->setToolTip(tr("Bitcoin client") + QString(" ") + tr("[testnet]"));
+#ifndef USE_UNITY
+                // No specific testnet icon when integrating into Unity, it will show the icon inside the menu
                 trayIcon->setIcon(QIcon(":/icons/toolbar_testnet"));
+#else
+                toggleHideAction->setText(tr("&Bitcoin Testnet"));
+#endif
                 toggleHideAction->setIcon(QIcon(":/icons/toolbar_testnet"));
             }
+        }
+        else
+        {
+#ifdef USE_UNITY
+            toggleHideAction->setText(tr("&Bitcoin"));
+#endif
         }
 
         // Keep up to date with client
@@ -405,7 +416,18 @@ void BitcoinGUI::createTrayIcon()
     trayIconMenu = new QMenu(this);
     trayIcon->setContextMenu(trayIconMenu);
     trayIcon->setToolTip(tr("Bitcoin client"));
+#ifdef USE_UNITY
+    // TODO: also show connected/unconnected status in tray
+    QIcon tray;
+    // Attention: unseen transactions
+    // Error: errors occured
+    tray.addFile(":/icons/unity-indicator/base-16", QSize(22,16));
+    tray.addFile(":/icons/unity-indicator/base-22", QSize(22,22));
+    tray.addFile(":/icons/unity-indicator/base-24", QSize(24,24));
+    trayIcon->setIcon(tray);
+#else
     trayIcon->setIcon(QIcon(":/icons/toolbar"));
+#endif
     connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
             this, SLOT(trayIconActivated(QSystemTrayIcon::ActivationReason)));
     trayIcon->show();

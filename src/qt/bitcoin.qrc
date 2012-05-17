@@ -86,4 +86,15 @@
         <file alias="zh_CN">locale/bitcoin_zh_CN.qm</file>
         <file alias="zh_TW">locale/bitcoin_zh_TW.qm</file>
     </qresource>
+    <qresource prefix="/icons/unity-indicator">
+        <file alias="base-16">res/icons/unity-indicator/indicator-bitcoin-16.png</file>
+        <file alias="base-22">res/icons/unity-indicator/indicator-bitcoin-22.png</file>
+        <file alias="base-24">res/icons/unity-indicator/indicator-bitcoin-24.png</file>
+        <file alias="attention-16">res/icons/unity-indicator/indicator-bitcoin-attention-16.png</file>
+        <file alias="attention-22">res/icons/unity-indicator/indicator-bitcoin-attention-22.png</file>
+        <file alias="attention-24">res/icons/unity-indicator/indicator-bitcoin-attention-24.png</file>
+        <file alias="error-16">res/icons/unity-indicator/indicator-bitcoin-error-16.png</file>
+        <file alias="error-22">res/icons/unity-indicator/indicator-bitcoin-error-22.png</file>
+        <file alias="error-24">res/icons/unity-indicator/indicator-bitcoin-error-24.png</file>
+    </qresource>
 </RCC>

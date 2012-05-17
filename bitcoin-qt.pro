@@ -63,12 +63,12 @@ contains(USE_DBUS, 1) {
 }
 
 # use: qmake "USE_UNITY=1"
-# needs packages: libunity-dev libdbusmenu-qt-dev appmenu-qt
+# needs packages: libunity-dev libdbusmenu-qt-dev libappindicator-dev appmenu-qt
 contains(USE_UNITY, 1) {
     message(Building with Unity (Ubuntu) support)
     DEFINES += USE_UNITY
     CONFIG += link_pkgconfig
-    PKGCONFIG += dbusmenu-qt unity
+    PKGCONFIG += dbusmenu-qt unity appindicator-0.1
 }
 
 # use: qmake "FIRST_CLASS_MESSAGING=1"
