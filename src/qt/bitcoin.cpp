@@ -211,6 +211,9 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForCStrings(QTextCodec::codecForTr());
 
     Q_INIT_RESOURCE(bitcoin);
+#ifdef USE_UNITY
+    Q_INIT_RESOURCE(bitcoin_unity);
+#endif
     QApplication app(argc, argv);
 
     // Install global event filter that makes sure that long tooltips can be word-wrapped

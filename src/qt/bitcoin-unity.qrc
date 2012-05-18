@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/icons/unity-indicator/16">
+        <file alias="indicator-bitcoin">res/src/indicator/16/indicator-bitcoin.svg</file>
+        <file alias="indicator-bitcoin-attention">res/src/indicator/16/indicator-bitcoin-attention.svg</file>
+        <file alias="indicator-bitcoin-connecting">res/src/indicator/16/indicator-bitcoin-connecting.svg</file>
+        <file alias="indicator-bitcoin-error">res/src/indicator/16/indicator-bitcoin-error.svg</file>
+    </qresource>
+    <qresource prefix="/icons/unity-indicator/22">
+        <file alias="indicator-bitcoin">res/src/indicator/22/indicator-bitcoin.svg</file>
+        <file alias="indicator-bitcoin-attention">res/src/indicator/22/indicator-bitcoin-attention.svg</file>
+        <file alias="indicator-bitcoin-connecting">res/src/indicator/22/indicator-bitcoin-connecting.svg</file>
+        <file alias="indicator-bitcoin-error">res/src/indicator/22/indicator-bitcoin-error.svg</file>
+    </qresource>
+    <qresource prefix="/icons/unity-indicator/24">
+        <file alias="indicator-bitcoin">res/src/indicator/24/indicator-bitcoin.svg</file>
+        <file alias="indicator-bitcoin-attention">res/src/indicator/24/indicator-bitcoin-attention.svg</file>
+        <file alias="indicator-bitcoin-connecting">res/src/indicator/24/indicator-bitcoin-connecting.svg</file>
+        <file alias="indicator-bitcoin-error">res/src/indicator/24/indicator-bitcoin-error.svg</file>
+    </qresource>
+</RCC>

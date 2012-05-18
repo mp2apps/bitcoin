@@ -63,6 +63,7 @@ contains(USE_UNITY, 1) {
     CONFIG += link_pkgconfig
     PKGCONFIG += dbusmenu-qt
     USE_DBUS=1 # Force DBUS
+    RESOURCES += src/qt/bitcoin-unity.qrc
 }
 
 # use: qmake "USE_DBUS=1"

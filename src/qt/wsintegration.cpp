@@ -87,6 +87,7 @@ private:
     Notificator *notificator;
     DBusMenuExporter *menuExporter;
     QAction *headerAction;
+    QAction *toggleHideAction;
 
     QIcon trayIconBase;
     QIcon trayIconConnecting;
@@ -225,7 +226,7 @@ void WSIntegrationMacOSX::setTestnet(bool testnet)
 /** Unity (Ubuntu) implementation ***********************************************/
 WSIntegrationUnity::WSIntegrationUnity(QWidget *parent) :
     WSIntegration(parent), trayIcon(0), trayMenu(0), quickMenu(0), notificator(0),
-    menuExporter(0), headerAction(0),
+    menuExporter(0), headerAction(0), toggleHideAction(0),
     error(false), attention(false), numConnections(0)
 {
     loadIcons();
@@ -247,8 +248,11 @@ WSIntegrationUnity::WSIntegrationUnity(QWidget *parent) :
 
     notificator = new Notificator(tr("bitcoin-qt"), trayIcon, parent);
 
-    headerAction = new QAction(QIcon(":/icons/bitcoin"), tr("&Bitcoin"), this);
-    connect(headerAction, SIGNAL(triggered()), this, SIGNAL(iconTriggered()));
+    // first row of statusnotifier shows "status"
+    headerAction = new QAction(this);
+    headerAction->setEnabled(false);
+    toggleHideAction = new QAction(QIcon(":/icons/bitcoin"), tr("&Bitcoin"), this);
+    connect(toggleHideAction, SIGNAL(triggered()), this, SIGNAL(iconTriggered()));
     /*
     QVariantMap args;
     args.insert("count-visible", true);
@@ -262,18 +266,22 @@ void WSIntegrationUnity::updateStatus()
     if(error)
     {
         trayIcon->setIcon(trayIconError);
+        headerAction->setText(tr("Error"));
     }
     else if(numConnections == 0)
     {
         trayIcon->setIcon(trayIconConnecting);
+        headerAction->setText(tr("Connecting..."));
     }
     else if(attention)
     {
         trayIcon->setIcon(trayIconAttention);
+        headerAction->setText(tr("New transactions"));
     }
     else
     {
         trayIcon->setIcon(trayIconBase);
+        headerAction->setText(tr("Connected"));
     }
 }
 
@@ -281,6 +289,7 @@ void WSIntegrationUnity::setIconMenu(QMenu *menu, QAction *quitAction)
 {
     trayMenu = new QMenu();
     trayMenu->addAction(headerAction);
+    trayMenu->addAction(toggleHideAction);
     trayMenu->addActions(menu->actions());
     if(quitAction)
     {
@@ -344,13 +353,13 @@ void WSIntegrationUnity::setTestnet(bool testnet)
     // maybe set desktop entry based on testnet/normalnet?
     if(testnet)
     {
-        headerAction->setText(tr("&Bitcoin") + QString(" ") + tr("[testnet]"));
-        headerAction->setIcon(QIcon(":/icons/toolbar_testnet"));
+        toggleHideAction->setText(tr("&Bitcoin") + QString(" ") + tr("[testnet]"));
+        toggleHideAction->setIcon(QIcon(":/icons/toolbar_testnet"));
     }
     else
     {
-        headerAction->setText(tr("&Bitcoin"));
-        headerAction->setIcon(QIcon(":/icons/toolbar"));
+        toggleHideAction->setText(tr("&Bitcoin"));
+        toggleHideAction->setIcon(QIcon(":/icons/toolbar"));
     }
 }
 
