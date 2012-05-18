@@ -421,9 +421,9 @@ void BitcoinGUI::createTrayIcon()
     QIcon tray;
     // Attention: unseen transactions
     // Error: errors occured
-    tray.addFile(":/icons/unity-indicator/base-16", QSize(22,16));
-    tray.addFile(":/icons/unity-indicator/base-22", QSize(22,22));
-    tray.addFile(":/icons/unity-indicator/base-24", QSize(24,24));
+    tray.addFile(":/icons/unity-indicator/16/indicator-bitcoin-connecting", QSize(22,16));
+    tray.addFile(":/icons/unity-indicator/22/indicator-bitcoin-connecting", QSize(22,22));
+    tray.addFile(":/icons/unity-indicator/24/indicator-bitcoin-connecting", QSize(24,24));
     trayIcon->setIcon(tray);
 #else
     trayIcon->setIcon(QIcon(":/icons/toolbar"));
