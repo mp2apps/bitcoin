@@ -276,14 +276,14 @@ int main(int argc, char *argv[])
     }
 
     QSplashScreen splash(QPixmap(":/images/splash"), 0);
-    /*
+#ifndef USE_UNITY
     if (GetBoolArg("-splash", true) && !GetBoolArg("-min"))
     {
         splash.show();
         splash.setAutoFillBackground(true);
         splashref = &splash;
     }
-    */
+#endif
 
     app.processEvents();
 

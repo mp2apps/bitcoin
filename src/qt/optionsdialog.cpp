@@ -313,9 +313,11 @@ WindowOptionsPage::WindowOptionsPage(QWidget *parent):
     setWindowTitle(tr("Window"));
 
 #ifndef Q_WS_MAC
+#ifndef USE_UNITY
     minimize_to_tray = new QCheckBox(tr("&Minimize to the tray instead of the taskbar"));
     minimize_to_tray->setToolTip(tr("Show only a tray icon after minimizing the window"));
     layout->addWidget(minimize_to_tray);
+#endif
 
     minimize_on_close = new QCheckBox(tr("M&inimize on close"));
     minimize_on_close->setToolTip(tr("Minimize instead of exit the application when the window is closed. When this option is enabled, the application will be closed only after selecting Quit in the menu."));

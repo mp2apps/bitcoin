@@ -25,4 +25,7 @@ static const int STATUSBAR_ICONSIZE = 16;
  */
 static const int TOOLTIP_WRAP_THRESHOLD = 80;
 
+#define DESKTOP_FILE "bitcoin-qt.desktop"
+#define UNITY_APP_URI "/bitcoin"
+
 #endif // GUICONSTANTS_H

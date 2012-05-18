@@ -55,20 +55,21 @@ contains(USE_UPNP, -) {
     win32:LIBS += -liphlpapi
 }
 
+# use: qmake "USE_UNITY=1"
+# needs packages: libdbusmenu-qt-dev appmenu-qt
+contains(USE_UNITY, 1) {
+    message(Building with Unity (Ubuntu) support)
+    DEFINES += USE_UNITY
+    CONFIG += link_pkgconfig
+    PKGCONFIG += dbusmenu-qt
+    USE_DBUS=1 # Force DBUS
+}
+
 # use: qmake "USE_DBUS=1"
 contains(USE_DBUS, 1) {
     message(Building with DBUS (Freedesktop notifications) support)
     DEFINES += USE_DBUS
     QT += dbus
-}
-
-# use: qmake "USE_UNITY=1"
-# needs packages: libunity-dev libdbusmenu-qt-dev libappindicator-dev appmenu-qt
-contains(USE_UNITY, 1) {
-    message(Building with Unity (Ubuntu) support)
-    DEFINES += USE_UNITY
-    CONFIG += link_pkgconfig
-    PKGCONFIG += dbusmenu-qt unity appindicator-0.1
 }
 
 # use: qmake "FIRST_CLASS_MESSAGING=1"
@@ -171,7 +172,8 @@ HEADERS += src/qt/bitcoingui.h \
     src/ui_interface.h \
     src/qt/rpcconsole.h \
     src/qt/verifymessagedialog.h \
-    src/qt/unitydockiconhandler.h
+    src/qt/unitydockiconhandler.h \
+    src/qt/wsintegration.h
 
 SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/transactiontablemodel.cpp \
@@ -229,7 +231,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/qtipcserver.cpp \
     src/qt/rpcconsole.cpp \
     src/qt/verifymessagedialog.cpp \
-    src/qt/unitydockiconhandler.cpp
+    src/qt/wsintegration.cpp
 
 RESOURCES += \
     src/qt/bitcoin.qrc

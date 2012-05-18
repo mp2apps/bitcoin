@@ -26,13 +26,8 @@
 #include "notificator.h"
 #include "guiutil.h"
 #include "rpcconsole.h"
+#include "wsintegration.h"
 
-#ifdef Q_WS_MAC
-#include "macdockiconhandler.h"
-#endif
-#ifdef USE_UNITY
-#include "unitydockiconhandler.h"
-#endif
 #include <QApplication>
 #include <QMainWindow>
 #include <QMenuBar>
@@ -60,7 +55,6 @@
 
 #include <iostream>
 
-
 BitcoinGUI::BitcoinGUI(QWidget *parent):
     QMainWindow(parent),
     clientModel(0),
@@ -68,23 +62,16 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     encryptWalletAction(0),
     changePassphraseAction(0),
     aboutQtAction(0),
-    trayIcon(0),
     notificator(0),
-    unityDock(0),
-    rpcConsole(0)
+    rpcConsole(0), wsIntegration(0)
 {
     resize(850, 550);
-    setWindowTitle(tr("Bitcoin Wallet"));
-#ifndef Q_WS_MAC
-    qApp->setWindowIcon(QIcon(":icons/bitcoin"));
-    setWindowIcon(QIcon(":icons/bitcoin"));
-#else
+
+#ifdef Q_WS_MAC
     setUnifiedTitleAndToolBarOnMac(true);
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
-#ifdef USE_UNITY
-    unityDock = new UnityDockIconHandler("bitcoin-qt.desktop", this);
-#endif
+    wsIntegration = WSIntegration::factory(this);
 
     // Accept D&D of URIs
     setAcceptDrops(true);
@@ -98,8 +85,8 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Create the toolbars
     createToolBars();
 
-    // Create the tray icon (or setup the dock icon)
-    createTrayIcon();
+    // Create the tray icon / dock icon menu
+    createTrayIconMenu();
 
     // Create tabs
     overviewPage = new OverviewPage();
@@ -164,6 +151,8 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     syncIconMovie = new QMovie(":/movies/update_spinner", "mng", this);
 
+    connect(wsIntegration, SIGNAL(iconTriggered()), this, SLOT(toggleHidden()));
+
     // Clicking on a transaction on the overview page simply sends you to transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), this, SLOT(gotoHistoryPage()));
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), transactionView, SLOT(focusTransaction(QModelIndex)));
@@ -179,8 +168,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
 BitcoinGUI::~BitcoinGUI()
 {
-    if(trayIcon) // Hide tray icon, as deleting will let it linger until quit (on Ubuntu)
-        trayIcon->hide();
 #ifdef Q_WS_MAC
     delete appMenuBar;
 #endif
@@ -253,8 +240,6 @@ void BitcoinGUI::createActions()
     optionsAction = new QAction(QIcon(":/icons/options"), tr("&Options..."), this);
     optionsAction->setToolTip(tr("Modify configuration options for bitcoin"));
     optionsAction->setMenuRole(QAction::PreferencesRole);
-    toggleHideAction = new QAction(QIcon(":/icons/bitcoin"), tr("Show/Hide &Bitcoin"), this);
-    toggleHideAction->setToolTip(tr("Show or hide the Bitcoin window"));
     exportAction = new QAction(QIcon(":/icons/export"), tr("&Export..."), this);
     exportAction->setToolTip(tr("Export the data in the current tab to a file"));
     encryptWalletAction = new QAction(QIcon(":/icons/lock_closed"), tr("&Encrypt Wallet..."), this);
@@ -273,7 +258,6 @@ void BitcoinGUI::createActions()
     connect(optionsAction, SIGNAL(triggered()), this, SLOT(optionsClicked()));
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(aboutClicked()));
     connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
-    connect(toggleHideAction, SIGNAL(triggered()), this, SLOT(toggleHidden()));
     connect(encryptWalletAction, SIGNAL(triggered(bool)), this, SLOT(encryptWallet(bool)));
     connect(backupWalletAction, SIGNAL(triggered()), this, SLOT(backupWallet()));
     connect(changePassphraseAction, SIGNAL(triggered()), this, SLOT(changePassphrase()));
@@ -339,31 +323,17 @@ void BitcoinGUI::setClientModel(ClientModel *clientModel)
     {
         if(clientModel->isTestNet())
         {
-            setWindowTitle(windowTitle() + QString(" ") + tr("[testnet]"));
-#ifndef Q_WS_MAC
+            setWindowTitle(tr("Bitcoin Wallet") + QString(" ") + tr("[testnet]"));
             qApp->setWindowIcon(QIcon(":icons/bitcoin_testnet"));
             setWindowIcon(QIcon(":icons/bitcoin_testnet"));
-#else
-            MacDockIconHandler::instance()->setIcon(QIcon(":icons/bitcoin_testnet"));
-#endif
-            if(trayIcon)
-            {
-                trayIcon->setToolTip(tr("Bitcoin client") + QString(" ") + tr("[testnet]"));
-#ifndef USE_UNITY
-                // No specific testnet icon when integrating into Unity, it will show the icon inside the menu
-                trayIcon->setIcon(QIcon(":/icons/toolbar_testnet"));
-#else
-                toggleHideAction->setText(tr("&Bitcoin Testnet"));
-#endif
-                toggleHideAction->setIcon(QIcon(":/icons/toolbar_testnet"));
-            }
         }
         else
         {
-#ifdef USE_UNITY
-            toggleHideAction->setText(tr("&Bitcoin"));
-#endif
+            setWindowTitle(tr("Bitcoin Wallet"));
+            qApp->setWindowIcon(QIcon(":icons/bitcoin"));
+            setWindowIcon(QIcon(":icons/bitcoin"));
         }
+        wsIntegration->setTestnet(clientModel->isTestNet());
 
         // Keep up to date with client
         setNumConnections(clientModel->getNumConnections());
@@ -371,6 +341,10 @@ void BitcoinGUI::setClientModel(ClientModel *clientModel)
 
         setNumBlocks(clientModel->getNumBlocks());
         connect(clientModel, SIGNAL(numBlocksChanged(int)), this, SLOT(setNumBlocks(int)));
+
+        // Keep window system integration up to date with client
+        wsIntegration->setNumConnections(clientModel->getNumConnections());
+        connect(clientModel, SIGNAL(numConnectionsChanged(int)), wsIntegration, SLOT(setNumConnections(int)));
 
         // Report errors from network/worker thread
         connect(clientModel, SIGNAL(error(QString,QString, bool)), this, SLOT(error(QString,QString,bool)));
@@ -408,38 +382,11 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel)
     }
 }
 
-void BitcoinGUI::createTrayIcon()
+void BitcoinGUI::createTrayIconMenu()
 {
-    QMenu *trayIconMenu;
-#ifndef Q_WS_MAC
-    trayIcon = new QSystemTrayIcon(this);
-    trayIconMenu = new QMenu(this);
-    trayIcon->setContextMenu(trayIconMenu);
-    trayIcon->setToolTip(tr("Bitcoin client"));
-#ifdef USE_UNITY
-    // TODO: also show connected/unconnected status in tray
-    QIcon tray;
-    // Attention: unseen transactions
-    // Error: errors occured
-    tray.addFile(":/icons/unity-indicator/16/indicator-bitcoin-connecting", QSize(22,16));
-    tray.addFile(":/icons/unity-indicator/22/indicator-bitcoin-connecting", QSize(22,22));
-    tray.addFile(":/icons/unity-indicator/24/indicator-bitcoin-connecting", QSize(24,24));
-    trayIcon->setIcon(tray);
-#else
-    trayIcon->setIcon(QIcon(":/icons/toolbar"));
-#endif
-    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
-            this, SLOT(trayIconActivated(QSystemTrayIcon::ActivationReason)));
-    trayIcon->show();
-#else
-    // Note: On Mac, the dock icon is used to provide the tray's functionality.
-    MacDockIconHandler *dockIconHandler = MacDockIconHandler::instance();
-    connect(dockIconHandler, SIGNAL(dockIconClicked()), toggleHideAction, SLOT(trigger()));
-    trayIconMenu = dockIconHandler->dockMenu();
-#endif
+    QMenu *trayIconMenu = new QMenu(this);
 
     // Configuration of the tray icon (or dock icon) icon menu
-    trayIconMenu->addAction(toggleHideAction);
     trayIconMenu->addAction(openRPCConsoleAction);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(messageAction);
@@ -451,28 +398,15 @@ void BitcoinGUI::createTrayIcon()
     trayIconMenu->addAction(receiveCoinsAction);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(optionsAction);
-#ifndef Q_WS_MAC // This is built-in on Mac
-    trayIconMenu->addSeparator();
-    trayIconMenu->addAction(quitAction);
-#endif
+    wsIntegration->setIconMenu(trayIconMenu, quitAction);
 
-    notificator = new Notificator(tr("bitcoin-qt"), trayIcon);
+    notificator = wsIntegration->getNotificator();
 }
-
-#ifndef Q_WS_MAC
-void BitcoinGUI::trayIconActivated(QSystemTrayIcon::ActivationReason reason)
-{
-    if(reason == QSystemTrayIcon::Trigger)
-    {
-        // Click on system tray icon triggers "show/hide bitcoin"
-        toggleHideAction->trigger();
-    }
-}
-#endif
 
 void BitcoinGUI::toggleHidden()
 {
     // activateWindow() (sometimes) helps with keyboard focus on Windows
+    wsIntegration->setAttentionFlag(false);
     if (isHidden())
     {
         show();
@@ -530,7 +464,7 @@ void BitcoinGUI::setNumBlocks(int count)
     {
         progressBarLabel->setVisible(false);
         progressBar->setVisible(false);
-
+        wsIntegration->setProgressVisible(false);
         return;
     }
 
@@ -541,6 +475,8 @@ void BitcoinGUI::setNumBlocks(int count)
     {
         int nRemainingBlocks = nTotalBlocks - count;
         float nPercentageDone = count / (nTotalBlocks * 0.01f);
+        wsIntegration->setProgress(count, nTotalBlocks);
+        wsIntegration->setProgressVisible(true);
 
         if (clientModel->getStatusBarWarnings() == "")
         {
@@ -561,6 +497,7 @@ void BitcoinGUI::setNumBlocks(int count)
     }
     else
     {
+        wsIntegration->setProgressVisible(false);
         if (clientModel->getStatusBarWarnings() == "")
             progressBarLabel->setVisible(false);
         else
@@ -720,6 +657,7 @@ void BitcoinGUI::incomingTransaction(const QModelIndex & parent, int start, int 
                               .arg(BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), amount, true))
                               .arg(type)
                               .arg(address), icon);
+        wsIntegration->setAttentionFlag(true);
     }
 }
 
@@ -901,6 +839,7 @@ void BitcoinGUI::unlockWallet()
 
 void BitcoinGUI::showNormalIfMinimized()
 {
+    wsIntegration->setAttentionFlag(false);
     if(!isVisible()) // Show, if hidden
         show();
     if(isMinimized()) // Unminimize, if minimized

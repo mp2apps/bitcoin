@@ -14,9 +14,7 @@ class SendCoinsDialog;
 class MessagePage;
 class Notificator;
 class RPCConsole;
-#ifdef USE_UNITY
-class UnityDockIconHandler;
-#endif
+class WSIntegration;
 
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -86,7 +84,6 @@ private:
     QAction *aboutAction;
     QAction *receiveCoinsAction;
     QAction *optionsAction;
-    QAction *toggleHideAction;
     QAction *exportAction;
     QAction *encryptWalletAction;
     QAction *backupWalletAction;
@@ -94,13 +91,10 @@ private:
     QAction *aboutQtAction;
     QAction *openRPCConsoleAction;
 
-    QSystemTrayIcon *trayIcon;
     Notificator *notificator;
-#ifdef USE_UNITY
-    UnityDockIconHandler *unityDock;
-#endif
     TransactionView *transactionView;
     RPCConsole *rpcConsole;
+    WSIntegration *wsIntegration;
 
     QMovie *syncIconMovie;
 
@@ -110,8 +104,8 @@ private:
     void createMenuBar();
     /** Create the toolbars */
     void createToolBars();
-    /** Create system tray (notification) icon */
-    void createTrayIcon();
+    /** Create system tray (notification) menu */
+    void createTrayIconMenu();
 
 public slots:
     /** Set number of connections shown in the UI */
@@ -155,10 +149,6 @@ private slots:
     void optionsClicked();
     /** Show about dialog */
     void aboutClicked();
-#ifndef Q_WS_MAC
-    /** Handle tray icon clicked */
-    void trayIconActivated(QSystemTrayIcon::ActivationReason reason);
-#endif
     /** Show incoming transaction notification for new transactions.
 
         The new items are those between start and end inclusive, under the given parent item.
