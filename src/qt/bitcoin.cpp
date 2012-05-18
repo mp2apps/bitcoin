@@ -280,6 +280,9 @@ int main(int argc, char *argv[])
 
     QSplashScreen splash(QPixmap(":/images/splash"), 0);
 #ifndef USE_UNITY
+    // Splash screen gives trouble with Unity, as it thinks that the splash
+    // screen is the main window for some reason. This causes it to hide the
+    // dock icon.
     if (GetBoolArg("-splash", true) && !GetBoolArg("-min"))
     {
         splash.show();
