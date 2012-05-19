@@ -368,7 +368,7 @@ void TransactionView::showDetails()
     QModelIndexList selection = transactionView->selectionModel()->selectedRows();
     if(!selection.isEmpty())
     {
-        TransactionDescDialog dlg(selection.at(0));
+        TransactionDescDialog dlg(selection.at(0), this);
         dlg.exec();
     }
 }
