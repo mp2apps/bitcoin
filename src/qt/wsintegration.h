@@ -9,7 +9,10 @@ class QAction;
 class Notificator;
 QT_END_NAMESPACE
 
-/* Window system integration */
+/** Window system integration.
+ * This interface is kept very generic on purpose. Implementations on specific operating systems can use
+ * or ignore any piece of information as they wish.
+ */
 class WSIntegration : public QObject
 {
     Q_OBJECT
@@ -25,7 +28,7 @@ public:
     virtual void setIconMenu(QMenu *menu, QAction *quitAction=0) {}
 
     /**
-     * Get notificator instance.
+     * Get notificator instance. The window system integration decides which notificator to use.
      */
     virtual Notificator *getNotificator() = 0;
 
