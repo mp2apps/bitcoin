@@ -37,7 +37,7 @@ bool GetMyExternalIP(CNetAddr& ipRet);
 void AddressCurrentlyConnected(const CService& addr);
 CNode* FindNode(const CNetAddr& ip);
 CNode* FindNode(const CService& ip);
-CNode* ConnectNode(CAddress addrConnect, const char *strDest = NULL, int64 nTimeout=0);
+CNode* ConnectNode(CAddress addrConnect, const char *strDest = NULL);
 void MapPort(bool fUseUPnP);
 unsigned short GetListenPort();
 bool BindListenPort(const CService &bindAddr, std::string& strError=REF(std::string()));
@@ -99,9 +99,11 @@ public:
     int nVersion;
     std::string strSubVer;
     bool fInbound;
-    int64 nReleaseTime;
     int nStartingHeight;
     int nMisbehavior;
+    uint64 nSendBytes;
+    uint64 nRecvBytes;
+    bool fSyncNode;
 };
 
 
@@ -156,12 +158,14 @@ public:
     CDataStream ssSend;
     size_t nSendSize; // total size of all vSendMsg entries
     size_t nSendOffset; // offset inside the first vSendMsg already sent
+    uint64 nSendBytes;
     std::deque<CSerializeData> vSendMsg;
     CCriticalSection cs_vSend;
 
     std::deque<CInv> vRecvGetData;
     std::deque<CNetMessage> vRecvMsg;
     CCriticalSection cs_vRecvMsg;
+    uint64 nRecvBytes;
     int nRecvVersion;
 
     int64 nLastSend;
@@ -187,8 +191,8 @@ public:
     CSemaphoreGrant grantOutbound;
     CCriticalSection cs_filter;
     CBloomFilter* pfilter;
-protected:
     int nRefCount;
+protected:
 
     // Denial-of-service detection/prevention
     // Key is IP address, value is banned-until-time
@@ -197,11 +201,11 @@ protected:
     int nMisbehavior;
 
 public:
-    int64 nReleaseTime;
     uint256 hashContinue;
     CBlockIndex* pindexLastGetBlocksBegin;
     uint256 hashLastGetBlocksEnd;
     int nStartingHeight;
+    bool fStartSync;
 
     // flood relay
     std::vector<CAddress> vAddrToSend;
@@ -222,6 +226,8 @@ public:
         nRecvVersion = MIN_PROTO_VERSION;
         nLastSend = 0;
         nLastRecv = 0;
+        nSendBytes = 0;
+        nRecvBytes = 0;
         nLastSendEmpty = GetTime();
         nTimeConnected = GetTime();
         addr = addrIn;
@@ -235,13 +241,13 @@ public:
         fSuccessfullyConnected = false;
         fDisconnect = false;
         nRefCount = 0;
-        nReleaseTime = 0;
         nSendSize = 0;
         nSendOffset = 0;
         hashContinue = 0;
         pindexLastGetBlocksBegin = 0;
         hashLastGetBlocksEnd = 0;
         nStartingHeight = -1;
+        fStartSync = false;
         fGetAddr = false;
         nMisbehavior = 0;
         fRelayTxes = false;
@@ -272,7 +278,8 @@ public:
 
     int GetRefCount()
     {
-        return std::max(nRefCount, 0) + (GetTime() < nReleaseTime ? 1 : 0);
+        assert(nRefCount >= 0);
+        return nRefCount;
     }
 
     // requires LOCK(cs_vRecvMsg)
@@ -295,12 +302,9 @@ public:
             msg.SetVersion(nVersionIn);
     }
 
-    CNode* AddRef(int64 nTimeout=0)
+    CNode* AddRef()
     {
-        if (nTimeout != 0)
-            nReleaseTime = std::max(nReleaseTime, GetTime() + nTimeout);
-        else
-            nRefCount++;
+        nRefCount++;
         return this;
     }
 

@@ -45,7 +45,7 @@ static const unsigned int UNDOFILE_CHUNK_SIZE = 0x100000; // 1 MiB
 /** Fake height value used in CCoins to signify they are only in the memory pool (since 0.8) */
 static const unsigned int MEMPOOL_HEIGHT = 0x7FFFFFFF;
 /** Fees smaller than this (in satoshi) are considered zero fee (for transaction creation) */
-static const int64 MIN_TX_FEE = 50000;
+static const int64 MIN_TX_FEE = 10000;
 /** Fees smaller than this (in satoshi) are considered zero fee (for relaying) */
 static const int64 MIN_RELAY_TX_FEE = 10000;
 /** No amount larger than this (in satoshi) is valid */
@@ -77,8 +77,8 @@ extern std::set<CBlockIndex*, CBlockIndexWorkComparator> setBlockIndexValid;
 extern uint256 hashGenesisBlock;
 extern CBlockIndex* pindexGenesisBlock;
 extern int nBestHeight;
-extern CBigNum bnBestChainWork;
-extern CBigNum bnBestInvalidWork;
+extern uint256 nBestChainWork;
+extern uint256 nBestInvalidWork;
 extern uint256 hashBestChain;
 extern CBlockIndex* pindexBest;
 extern unsigned int nTransactionsUpdated;
@@ -195,11 +195,6 @@ bool AbortNode(const std::string &msg);
 
 
 
-static inline std::string BlockHashStr(const uint256& hash)
-{
-    return hash.ToString();
-}
-
 bool GetWalletFile(CWallet* pwallet, std::string &strWalletFileOut);
 
 struct CDiskBlockPos
@@ -301,7 +296,7 @@ public:
 
     std::string ToString() const
     {
-        return strprintf("COutPoint(%s, %u)", hash.ToString().substr(0,10).c_str(), n);
+        return strprintf("COutPoint(%s, %u)", hash.ToString().c_str(), n);
     }
 
     void print() const
@@ -635,7 +630,7 @@ public:
     {
         std::string str;
         str += strprintf("CTransaction(hash=%s, ver=%d, vin.size=%"PRIszu", vout.size=%"PRIszu", nLockTime=%u)\n",
-            GetHash().ToString().substr(0,10).c_str(),
+            GetHash().ToString().c_str(),
             nVersion,
             vin.size(),
             vout.size(),
@@ -1472,10 +1467,10 @@ public:
     void print() const
     {
         printf("CBlock(hash=%s, ver=%d, hashPrevBlock=%s, hashMerkleRoot=%s, nTime=%u, nBits=%08x, nNonce=%u, vtx=%"PRIszu")\n",
-            BlockHashStr(GetHash()).c_str(),
+            GetHash().ToString().c_str(),
             nVersion,
-            BlockHashStr(hashPrevBlock).c_str(),
-            hashMerkleRoot.ToString().substr(0,10).c_str(),
+            hashPrevBlock.ToString().c_str(),
+            hashMerkleRoot.ToString().c_str(),
             nTime, nBits, nNonce,
             vtx.size());
         for (unsigned int i = 0; i < vtx.size(); i++)
@@ -1485,7 +1480,7 @@ public:
         }
         printf("  vMerkleTree: ");
         for (unsigned int i = 0; i < vMerkleTree.size(); i++)
-            printf("%s ", vMerkleTree[i].ToString().substr(0,10).c_str());
+            printf("%s ", vMerkleTree[i].ToString().c_str());
         printf("\n");
     }
 
@@ -1624,7 +1619,7 @@ public:
     unsigned int nUndoPos;
 
     // (memory only) Total amount of work (expected number of hashes) in the chain up to and including this block
-    CBigNum bnChainWork;
+    uint256 nChainWork;
 
     // Number of transactions in this block.
     // Note: in a potential headers-first mode, this number cannot be relied upon
@@ -1653,7 +1648,7 @@ public:
         nFile = 0;
         nDataPos = 0;
         nUndoPos = 0;
-        bnChainWork = 0;
+        nChainWork = 0;
         nTx = 0;
         nChainTx = 0;
         nStatus = 0;
@@ -1674,7 +1669,7 @@ public:
         nFile = 0;
         nDataPos = 0;
         nUndoPos = 0;
-        bnChainWork = 0;
+        nChainWork = 0;
         nTx = 0;
         nChainTx = 0;
         nStatus = 0;
@@ -1785,8 +1780,8 @@ public:
     {
         return strprintf("CBlockIndex(pprev=%p, pnext=%p, nHeight=%d, merkle=%s, hashBlock=%s)",
             pprev, pnext, nHeight,
-            hashMerkleRoot.ToString().substr(0,10).c_str(),
-            BlockHashStr(GetBlockHash()).c_str());
+            hashMerkleRoot.ToString().c_str(),
+            GetBlockHash().ToString().c_str());
     }
 
     void print() const
@@ -1798,8 +1793,8 @@ public:
 struct CBlockIndexWorkComparator
 {
     bool operator()(CBlockIndex *pa, CBlockIndex *pb) {
-        if (pa->bnChainWork > pb->bnChainWork) return false;
-        if (pa->bnChainWork < pb->bnChainWork) return true;
+        if (pa->nChainWork > pb->nChainWork) return false;
+        if (pa->nChainWork < pb->nChainWork) return true;
 
         if (pa->GetBlockHash() < pb->GetBlockHash()) return false;
         if (pa->GetBlockHash() > pb->GetBlockHash()) return true;
@@ -1867,7 +1862,7 @@ public:
         str += CBlockIndex::ToString();
         str += strprintf("\n                hashBlock=%s, hashPrev=%s)",
             GetBlockHash().ToString().c_str(),
-            BlockHashStr(hashPrev).c_str());
+            hashPrev.ToString().c_str());
         return str;
     }
 

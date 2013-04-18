@@ -212,7 +212,8 @@ HEADERS += src/qt/bitcoingui.h \
     src/leveldb.h \
     src/threadsafety.h \
     src/limitedmap.h \
-    src/qt/macnotificationhandler.h
+    src/qt/macnotificationhandler.h \
+    src/qt/splashscreen.h
 
 SOURCES += src/qt/bitcoin.cpp \
     src/qt/bitcoingui.cpp \
@@ -279,7 +280,8 @@ SOURCES += src/qt/bitcoin.cpp \
     src/qt/rpcconsole.cpp \
     src/noui.cpp \
     src/leveldb.cpp \
-    src/txdb.cpp
+    src/txdb.cpp \
+    src/qt/splashscreen.cpp
 
 RESOURCES += src/qt/bitcoin.qrc
 
@@ -333,10 +335,16 @@ TSQM.CONFIG = no_link
 QMAKE_EXTRA_COMPILERS += TSQM
 
 # "Other files" to show in Qt Creator
-OTHER_FILES += \
-    doc/*.rst doc/*.txt doc/README README.md res/bitcoin-qt.rc src/test/*.cpp src/test/*.h src/qt/test/*.cpp src/qt/test/*.h \
-    src/qt/macusernotificationhandler.mm \
-    src/qt/macnotificationhandler.mm
+OTHER_FILES += README.md \
+    doc/*.rst \
+    doc/*.txt \
+    doc/README \
+    README.md \
+    src/qt/res/bitcoin-qt.rc \
+    src/test/*.cpp \
+    src/test/*.h \
+    src/qt/test/*.cpp \
+    src/qt/test/*.h
 
 # platform specific defaults, if not overridden on command line
 isEmpty(BOOST_LIB_SUFFIX) {
