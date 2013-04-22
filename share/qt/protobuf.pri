@@ -22,7 +22,7 @@ for(p, PROTO_PATH):PROTOPATHS += --proto_path=$${p}
 protobuf_decl.name  = protobuf header
 protobuf_decl.input = PROTOS
 protobuf_decl.output  = $${PROTO_DIR}/${QMAKE_FILE_BASE}.pb.h
-protobuf_decl.commands = $${PROTOC} --cpp_out="$${PROTO_DIR}" $${PROTOPATHS} ${QMAKE_FILE_NAME}
+protobuf_decl.commands = $${PROTOC} --cpp_out="$${PROTO_DIR}" $${PROTOPATHS} --proto_path=${QMAKE_FILE_IN_PATH} ${QMAKE_FILE_NAME}
 protobuf_decl.variable_out = GENERATED_FILES
 QMAKE_EXTRA_COMPILERS += protobuf_decl
 
