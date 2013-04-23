@@ -74,6 +74,9 @@ signals:
     // Fired when a valid PaymentACK is received
     void receivedPaymentACK(QString);
 
+    // Fired when an error should be reported to the user
+    void reportError(QString, QString, unsigned int);
+
 public slots:
     // Signal this when the main window's UI is ready
     // to display payment requests to the user

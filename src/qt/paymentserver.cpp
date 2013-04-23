@@ -127,7 +127,15 @@ void PaymentServer::LoadRootCAs(X509_STORE* _store)
             currentTime > cert.expiryDate() ||
             cert.isBlacklisted())
         {
-            qDebug() << "Invalid system certificate: " << cert;
+            if (fDebug) {
+#if QT_VERSION >= 0x050000
+                QStringList s = cert.subjectInfo(QSslCertificate::CommonName);
+                OutputDebugStringF("Invalid system certificate: %s\n", s.join("\n").toStdString().c_str());
+#else
+                QString s = cert.subjectInfo(QSslCertificate::CommonName);
+                OutputDebugStringF("Invalid system certificate: %s\n", s.toStdString().c_str());
+#endif
+            }
             continue;
         }
 
@@ -190,7 +198,9 @@ bool PaymentServer::ipcSendCommandLine(int argc, char* argv[])
         }
         else
         {
-            qDebug() << "Error reading payment request: " << arg;
+            OutputDebugStringF("Payment request file does not exist: %s\n", argv[i]);
+            // Printing to debug.log is about the best we can do here, the
+            // GUI hasn't started yet so we can't pop up a message box.
         }
     }
     if (fTestNet)
@@ -240,7 +250,7 @@ PaymentServer::PaymentServer(QObject* parent, bool startLocalServer) : QObject(p
         uriServer = new QLocalServer(this);
 
         if (!uriServer->listen(name))
-            qDebug() << tr("Cannot start bitcoin: click-to-pay handler");
+            OutputDebugStringF("Cannot start bitcoin: click-to-pay handler");
         else
             connect(uriServer, SIGNAL(newConnection()), this, SLOT(handleURIConnection()));
     }
@@ -364,13 +374,15 @@ bool PaymentServer::ReadPaymentRequest(const QString& filename, SendCoinsRecipie
     QFile f(filename);
     if (!f.open(QIODevice::ReadOnly))
     {
-        qDebug() << "PaymentServer::ReadPaymentRequest fail to open " << filename;
+        OutputDebugStringF("PaymentServer::ReadPaymentRequest fail to open %s\n",
+                           filename.toStdString().c_str());
         return false;
     }
 
     if (f.size() > MAX_PAYMENT_REQUEST_SIZE)
     {
-        qDebug() << "PaymentServer::ReadPaymentRequest " << filename << " too large: " << f.size();
+        OutputDebugStringF("PaymentServer::ReadPaymentRequest %s too large",
+                           filename.toStdString().c_str());
         return false;
     }
 
@@ -439,8 +451,6 @@ PaymentServer::fetchPaymentACK(CWallet* wallet, SendCoinsRecipient recipient, QB
     netRequest.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-bitcoin-payment");
     netRequest.setRawHeader("User-Agent", CLIENT_NAME.c_str());
 
-    qDebug() << "PaymentServer::fetchPaymentACK " << netRequest.url();
-
     payments::Payment payment;
     payment.set_merchant_data(details.merchant_data());
     payment.add_transactions(transaction.data(), transaction.size());
@@ -457,7 +467,9 @@ PaymentServer::fetchPaymentACK(CWallet* wallet, SendCoinsRecipient recipient, QB
         refund_to->set_script(&s[0], s.size());
     }
     else {
-        qDebug() << "Error getting refund key";
+        // This should never happen, because sending coins should have just unlocked the wallet
+        // and refilled the keypool
+        OutputDebugStringF("Error getting refund key, refund_to not set");
     }
 
     int length = payment.ByteSize();
@@ -467,7 +479,8 @@ PaymentServer::fetchPaymentACK(CWallet* wallet, SendCoinsRecipient recipient, QB
         netManager->post(netRequest, serData);
     }
     else {
-        qDebug() << "Error serializing payment message";
+        // This should never happen, either:
+        OutputDebugStringF("Error serializing payment message");
     }
 }
 
@@ -477,8 +490,11 @@ PaymentServer::netRequestFinished(QNetworkReply* reply)
     reply->deleteLater();
     if (reply->error() != QNetworkReply::NoError)
     {
-        // TODO: message box or status message?
-        qDebug() << "PaymentServer::netRequestFinished: reply error" << reply->error();
+        QString message = QObject::tr("Error communicating with %1: %2")
+            .arg(reply->request().url().toString())
+            .arg(reply->errorString());
+        OutputDebugStringF("%s\n", message.toStdString().c_str());
+        emit reportError(message, tr("Network request error"), CClientUIInterface::MODAL);
         return;
     }
 
@@ -498,19 +514,24 @@ PaymentServer::netRequestFinished(QNetworkReply* reply)
         payments::PaymentACK paymentACK;
         if (!paymentACK.ParseFromArray(data.data(), data.size()))
         {
-            // TODO: message box or status message?
-            qDebug() << "PaymentServer::netRequestFinished: couldn't parse paymentACK";
-            return;
+            QString message = QObject::tr("Bad response from server %1")
+                .arg(reply->request().url().toString());
+            OutputDebugStringF("%s\n", message.toStdString().c_str());
+            emit reportError(message, tr("Network request error"), CClientUIInterface::MODAL);
         }
-        emit receivedPaymentACK(QString::fromStdString(paymentACK.memo()));
+        else {
+            emit receivedPaymentACK(QString::fromStdString(paymentACK.memo()));
+        }
     }
 }
 
 void
 PaymentServer::reportSslErrors(QNetworkReply* reply, const QList<QSslError> &errs)
 {
-    // TODO: report error to user?
+    QString errString;
     foreach (const QSslError& err, errs) {
-        qDebug() << err.errorString();
+        errString += err.errorString() + "\n";
     }
+    OutputDebugStringF("%s", errString.toStdString().c_str());
+    emit reportError(errString, tr("Network request error"), CClientUIInterface::MODAL);
 }
