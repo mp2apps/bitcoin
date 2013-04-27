@@ -36,6 +36,9 @@ Q_IMPORT_PLUGIN(qkrcodecs)
 Q_IMPORT_PLUGIN(qtaccessiblewidgets)
 #endif
 
+// Declare meta types used for QMetaObject::invokeMethod
+Q_DECLARE_METATYPE(bool*)
+
 // Need a global reference for the notifications to find the GUI
 static BitcoinGUI *guiref;
 static SplashScreen *splashref;
@@ -122,6 +125,9 @@ int main(int argc, char *argv[])
     Q_INIT_RESOURCE(bitcoin);
     QApplication app(argc, argv);
 
+    // Register meta types used for QMetaObject::invokeMethod
+    qRegisterMetaType< bool* >();
+
     // Do this early as we don't want to bother initializing if we are just calling IPC
     // ... but do it after creating app, so QCoreApplication::arguments is initialized:
     if (PaymentServer::ipcSendCommandLine())
@@ -144,12 +150,12 @@ int main(int argc, char *argv[])
 
     // Application identification (must be set before OptionsModel is initialized,
     // as it is used to locate QSettings)
-    app.setOrganizationName("Bitcoin");
-    app.setOrganizationDomain("bitcoin.org");
+    QApplication::setOrganizationName("Bitcoin");
+    QApplication::setOrganizationDomain("bitcoin.org");
     if(GetBoolArg("-testnet")) // Separate UI settings for testnet
-        app.setApplicationName("Bitcoin-Qt-testnet");
+        QApplication::setApplicationName("Bitcoin-Qt-testnet");
     else
-        app.setApplicationName("Bitcoin-Qt");
+        QApplication::setApplicationName("Bitcoin-Qt");
 
     // ... then GUI settings:
     OptionsModel optionsModel;
@@ -205,7 +211,6 @@ int main(int argc, char *argv[])
     }
 
     app.processEvents();
-
     app.setQuitOnLastWindowClosed(false);
 
     try
