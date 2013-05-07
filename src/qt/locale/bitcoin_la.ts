@@ -27,14 +27,14 @@ Distributum sub MIT/X11 licentia programmatum, vide comitantem plicam COPYING ve
 Hoc productum continet programmata composita ab OpenSSL Project pro utendo in OpenSSL Toolkit (http://www.openssl.org/) et programmata cifrarum scripta ab Eric Young (eay@cryptsoft.com) et UPnP programmata scripta ab Thomas Bernard.</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.cpp" line="+17"/>
+        <location filename="../aboutdialog.cpp" line="+14"/>
         <source>Copyright</source>
         <translation>Copyright</translation>
     </message>
     <message>
         <location line="+0"/>
-        <source>2009-%1 The Bitcoin developers</source>
-        <translation>2009-%1 Bitcoin curatores</translation>
+        <source>The Bitcoin developers</source>
+        <translation>Bitcoin curatores</translation>
     </message>
 </context>
 <context>
@@ -65,7 +65,7 @@ Hoc productum continet programmata composita ab OpenSSL Project pro utendo in Op
         <translation>&amp;Nova Inscriptio</translation>
     </message>
     <message>
-        <location filename="../addressbookpage.cpp" line="+59"/>
+        <location filename="../addressbookpage.cpp" line="+63"/>
         <source>These are your Bitcoin addresses for receiving payments. You may want to give a different one to each sender so you can keep track of who is paying you.</source>
         <translation>Haec sunt inscriptiones Bitcoin tuae pro accipendo pensitationes.  Cupias variam ad quemque mittentem dare ut melius scias quem tibi pensare.</translation>
     </message>
@@ -95,7 +95,17 @@ Hoc productum continet programmata composita ab OpenSSL Project pro utendo in Op
         <translation>Dele active selectam inscriptionem ex enumeratione</translation>
     </message>
     <message>
-        <location line="-14"/>
+        <location line="+27"/>
+        <source>Export the data in the current tab to a file</source>
+        <translation>Exporta data in hac tabella in plicam</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>&amp;Export</source>
+        <translation>&amp;Exporta</translation>
+    </message>
+    <message>
+        <location line="-44"/>
         <source>Verify a message to ensure it was signed with a specified Bitcoin address</source>
         <translation>Verifica nuntium ut cures signatum esse cum specificata inscriptione Bitcoin</translation>
     </message>
@@ -112,7 +122,7 @@ Hoc productum continet programmata composita ab OpenSSL Project pro utendo in Op
     <message>
         <location filename="../addressbookpage.cpp" line="-5"/>
         <source>These are your Bitcoin addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation type="unfinished"/>
+        <translation>Hae sunt inscriptiones mittendi pensitationes.  Semper inspice quantitatem et inscriptionem accipiendi antequam nummos mittis.</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -317,12 +327,12 @@ Hoc productum continet programmata composita ab OpenSSL Project pro utendo in Op
         <translation>Signa &amp;nuntium...</translation>
     </message>
     <message>
-        <location line="+299"/>
+        <location line="+280"/>
         <source>Synchronizing with network...</source>
         <translation>Synchronizans cum rete...</translation>
     </message>
     <message>
-        <location line="-368"/>
+        <location line="-349"/>
         <source>&amp;Overview</source>
         <translation>&amp;Summarium</translation>
     </message>
@@ -397,7 +407,7 @@ Hoc productum continet programmata composita ab OpenSSL Project pro utendo in Op
         <translation>&amp;Muta tesseram...</translation>
     </message>
     <message>
-        <location line="+304"/>
+        <location line="+285"/>
         <source>Importing blocks from disk...</source>
         <translation>Importans frusta ab disco...</translation>
     </message>
@@ -407,12 +417,7 @@ Hoc productum continet programmata composita ab OpenSSL Project pro utendo in Op
         <translation>Recreans indicem frustorum in disco...</translation>
     </message>
     <message>
-        <location line="-300"/>
-        <source>&amp;Export...</source>
-        <translation>&amp;Exporta...</translation>
-    </message>
-    <message>
-        <location line="-66"/>
+        <location line="-347"/>
         <source>Send coins to a Bitcoin address</source>
         <translation>Mitte nummos ad inscriptionem Bitcoin</translation>
     </message>
@@ -422,12 +427,7 @@ Hoc productum continet programmata composita ab OpenSSL Project pro utendo in Op
         <translation>Muta configurationis optiones pro Bitcoin</translation>
     </message>
     <message>
-        <location line="+18"/>
-        <source>Export the data in the current tab to a file</source>
-        <translation>Exporta data in activa tabella ad plicam</translation>
-    </message>
-    <message>
-        <location line="-9"/>
+        <location line="+9"/>
         <source>Backup wallet to another location</source>
         <translation>Conserva cassidile in locum alium</translation>
     </message>
@@ -437,7 +437,7 @@ Hoc productum continet programmata composita ab OpenSSL Project pro utendo in Op
         <translation>Muta tesseram utam pro cassidilis cifrando</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+6"/>
         <source>&amp;Debug window</source>
         <translation>Fenestra &amp;Debug</translation>
     </message>
@@ -447,23 +447,23 @@ Hoc productum continet programmata composita ab OpenSSL Project pro utendo in Op
         <translation>Aperi terminalem debug et diagnosticalem</translation>
     </message>
     <message>
-        <location line="-7"/>
+        <location line="-4"/>
         <source>&amp;Verify message...</source>
         <translation>&amp;Verifica nuntium...</translation>
     </message>
     <message>
-        <location line="-163"/>
-        <location line="+541"/>
+        <location line="-165"/>
+        <location line="+530"/>
         <source>Bitcoin</source>
         <translation>Bitcoin</translation>
     </message>
     <message>
-        <location line="-541"/>
+        <location line="-530"/>
         <source>Wallet</source>
         <translation>Cassidile</translation>
     </message>
     <message>
-        <location line="+99"/>
+        <location line="+101"/>
         <source>&amp;Send</source>
         <translation>&amp;Mitte</translation>
     </message>
@@ -508,12 +508,12 @@ Hoc productum continet programmata composita ab OpenSSL Project pro utendo in Op
         <translation>Verifica nuntios ut certus sis eos signatos esse cum specificatis inscriptionibus Bitcoin</translation>
     </message>
     <message>
-        <location line="+31"/>
+        <location line="+28"/>
         <source>&amp;File</source>
         <translation>&amp;Plica</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+7"/>
         <source>&amp;Settings</source>
         <translation>&amp;Configuratio</translation>
     </message>
@@ -528,12 +528,7 @@ Hoc productum continet programmata composita ab OpenSSL Project pro utendo in Op
         <translation>Tabella instrumentorum &quot;Tabs&quot;</translation>
     </message>
     <message>
-        <location line="+8"/>
-        <source>Actions toolbar</source>
-        <translation>Tabella instrumentorum &quot;Actiones&quot;</translation>
-    </message>
-    <message>
-        <location line="+13"/>
+        <location line="+17"/>
         <location line="+10"/>
         <source>[testnet]</source>
         <translation>[testnet]</translation>
@@ -544,12 +539,17 @@ Hoc productum continet programmata composita ab OpenSSL Project pro utendo in Op
         <translation>Bitcoin cliens</translation>
     </message>
     <message numerus="yes">
-        <location line="+140"/>
+        <location line="+141"/>
         <source>%n active connection(s) to Bitcoin network</source>
         <translation><numerusform>%n activa conexio ad rete Bitcoin</numerusform><numerusform>%n activae conexiones ad rete Bitcoin</numerusform></translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+22"/>
+        <source>No block source available...</source>
+        <translation>Nulla fons frustorum absens...</translation>
+    </message>
+    <message>
+        <location line="+12"/>
         <source>Processed %1 of %2 (estimated) blocks of transaction history.</source>
         <translation>Perfecta %1 de %2 (aestimato) frusta historiae transactionum.</translation>
     </message>
@@ -574,7 +574,7 @@ Hoc productum continet programmata composita ab OpenSSL Project pro utendo in Op
         <translation><numerusform>%n hebdomas</numerusform><numerusform>%n hebdomades</numerusform></translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
         <source>%1 behind</source>
         <translation>%1 post</translation>
     </message>
@@ -589,7 +589,7 @@ Hoc productum continet programmata composita ab OpenSSL Project pro utendo in Op
         <translation>Transactiones post hoc nondum visibiles erunt.</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+22"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
@@ -604,22 +604,22 @@ Hoc productum continet programmata composita ab OpenSSL Project pro utendo in Op
         <translation>Informatio</translation>
     </message>
     <message>
-        <location line="+68"/>
+        <location line="+70"/>
         <source>This transaction is over the size limit. You can still send it for a fee of %1, which goes to the nodes that process your transaction and helps to support the network. Do you want to pay the fee?</source>
         <translation>Haec transactio maior est quam limen magnitudinis.  Adhuc potes id mittere mercede %1, quae it nodis qui procedunt tuam transactionem et adiuvat sustinere rete.  Visne mercedem solvere?</translation>
     </message>
     <message>
-        <location line="-138"/>
+        <location line="-140"/>
         <source>Up to date</source>
         <translation>Recentissimo</translation>
     </message>
     <message>
-        <location line="+32"/>
+        <location line="+31"/>
         <source>Catching up...</source>
         <translation>Persequens...</translation>
     </message>
     <message>
-        <location line="+110"/>
+        <location line="+113"/>
         <source>Confirm transaction fee</source>
         <translation>Confirma mercedem transactionis</translation>
     </message>
@@ -669,7 +669,7 @@ Inscriptio: %4
         <translation>Cassidile &lt;b&gt;cifratum&lt;/b&gt; est et iam nunc &lt;b&gt;seratum&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../bitcoin.cpp" line="+104"/>
+        <location filename="../bitcoin.cpp" line="+111"/>
         <source>A fatal error occurred. Bitcoin can no longer continue safely and will quit.</source>
         <translation>Error fatalis accidit.  Bitcoin nondum pergere tute potest, et exibit.</translation>
     </message>
@@ -677,7 +677,7 @@ Inscriptio: %4
 <context>
     <name>ClientModel</name>
     <message>
-        <location filename="../clientmodel.cpp" line="+98"/>
+        <location filename="../clientmodel.cpp" line="+104"/>
         <source>Network Alert</source>
         <translation>Monitio Retis</translation>
     </message>
@@ -808,8 +808,8 @@ Inscriptio: %4
     </message>
     <message>
         <location line="+6"/>
-        <source>Optional transaction fee per kB that helps make sure your transactions are processed quickly. Most transactions are 1 kB. Fee 0.01 recommended.</source>
-        <translation>Optionalis merces transactionum singulis kB quae adiuvat curare ut tuae transactiones processae sit celeriter.  Plurimi transactiones 1kB sunt. Merces 0.01 hortata.</translation>
+        <source>Optional transaction fee per kB that helps make sure your transactions are processed quickly. Most transactions are 1 kB.</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location line="+15"/>
@@ -1058,7 +1058,7 @@ Inscriptio: %4
         <translation>Totali nummi transactionum quae adhuc confirmandae sunt, et nondum afficiunt pendendum</translation>
     </message>
     <message>
-        <location filename="../overviewpage.cpp" line="+115"/>
+        <location filename="../overviewpage.cpp" line="+116"/>
         <location line="+1"/>
         <source>out of sync</source>
         <translation>non synchronizato</translation>
@@ -1645,6 +1645,19 @@ Inscriptio: %4
     </message>
 </context>
 <context>
+    <name>SplashScreen</name>
+    <message>
+        <location filename="../splashscreen.cpp" line="+22"/>
+        <source>The Bitcoin developers</source>
+        <translation>Bitcoin curatores</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>[testnet]</source>
+        <translation>[testnet]</translation>
+    </message>
+</context>
+<context>
     <name>TransactionDesc</name>
     <message>
         <location filename="../transactiondesc.cpp" line="+20"/>
@@ -2121,7 +2134,17 @@ Inscriptio: %4
 <context>
     <name>WalletView</name>
     <message>
-        <location filename="../walletview.cpp" line="+247"/>
+        <location filename="../walletview.cpp" line="+42"/>
+        <source>&amp;Export</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Export the data in the current tab to a file</source>
+        <translation>Exporta data in hac tabella in plicam</translation>
+    </message>
+    <message>
+        <location line="+193"/>
         <source>Backup Wallet</source>
         <translation>Conserva cassidile</translation>
     </message>
@@ -2154,12 +2177,12 @@ Inscriptio: %4
 <context>
     <name>bitcoin-core</name>
     <message>
-        <location filename="../bitcoinstrings.cpp" line="+96"/>
+        <location filename="../bitcoinstrings.cpp" line="+94"/>
         <source>Bitcoin version</source>
         <translation>Versio de Bitcoin</translation>
     </message>
     <message>
-        <location line="+98"/>
+        <location line="+97"/>
         <source>Usage:</source>
         <translation>Usus:</translation>
     </message>
@@ -2169,7 +2192,7 @@ Inscriptio: %4
         <translation>Mitte mandatum ad -server vel bitcoind</translation>
     </message>
     <message>
-        <location line="-22"/>
+        <location line="-23"/>
         <source>List commands</source>
         <translation>Enumera mandata</translation>
     </message>
@@ -2179,7 +2202,7 @@ Inscriptio: %4
         <translation>Accipe auxilium pro mandato</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+22"/>
         <source>Options:</source>
         <translation>Optiones:</translation>
     </message>
@@ -2194,17 +2217,7 @@ Inscriptio: %4
         <translation>Specifica pid plicam (praedefinitum: bitcoin.pid)</translation>
     </message>
     <message>
-        <location line="-48"/>
-        <source>Generate coins</source>
-        <translation>Genera nummos</translation>
-    </message>
-    <message>
-        <location line="-27"/>
-        <source>Don&apos;t generate coins</source>
-        <translation>Nolite nummos generare</translation>
-    </message>
-    <message>
-        <location line="+74"/>
+        <location line="-1"/>
         <source>Specify data directory</source>
         <translation>Specifica indicem datorum</translation>
     </message>
@@ -2214,7 +2227,7 @@ Inscriptio: %4
         <translation>Constitue magnitudinem databasis cache in megabytes (praedefinitum: 25)</translation>
     </message>
     <message>
-        <location line="-27"/>
+        <location line="-28"/>
         <source>Listen for connections on &lt;port&gt; (default: 8333 or testnet: 18333)</source>
         <translation>Ausculta pro conexionibus in &lt;porta&gt; (praedefinitum: 8333 vel testnet: 18333)</translation>
     </message>
@@ -2224,7 +2237,7 @@ Inscriptio: %4
         <translation>Manutene non plures quam &lt;n&gt; conexiones ad paria (praedefinitum: 125)</translation>
     </message>
     <message>
-        <location line="-48"/>
+        <location line="-47"/>
         <source>Connect to a node to retrieve peer addresses, and disconnect</source>
         <translation>Conecta ad nodum acceptare inscriptiones parium, et disconecte</translation>
     </message>
@@ -2244,22 +2257,22 @@ Inscriptio: %4
         <translation>Numerum secundorum prohibere ne paria improba reconectant (praedefinitum: 86400)</translation>
     </message>
     <message>
-        <location line="-32"/>
+        <location line="-29"/>
         <source>An error occurred while setting up the RPC port %u for listening on IPv4: %s</source>
         <translation>Error erat dum initians portam RPC %u pro auscultando in IPv4: %s</translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="+27"/>
         <source>Listen for JSON-RPC connections on &lt;port&gt; (default: 8332 or testnet: 18332)</source>
         <translation>Ausculta pro conexionibus JSON-RPC in &lt;porta&gt; (praedefinitum: 8332 vel testnet: 18332)</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+37"/>
         <source>Accept command line and JSON-RPC commands</source>
         <translation>Accipe terminalis et JSON-RPC mandata.</translation>
     </message>
     <message>
-        <location line="+76"/>
+        <location line="+75"/>
         <source>Run in the background as a daemon and accept commands</source>
         <translation>Operare infere sicut daemon et mandata accipe</translation>
     </message>
@@ -2269,12 +2282,12 @@ Inscriptio: %4
         <translation>Utere rete experimentale</translation>
     </message>
     <message>
-        <location line="-108"/>
+        <location line="-107"/>
         <source>Accept connections from outside (default: 1 if no -proxy or -connect)</source>
         <translation>Accipe conexiones externas (praedefinitum: 1 nisi -proxy neque -connect)</translation>
     </message>
     <message>
-        <location line="-82"/>
+        <location line="-80"/>
         <source>%s, you must set a rpcpassword in the configuration file:
 %s
 It is recommended you use the following random password:
@@ -2315,11 +2328,6 @@ exempli gratia: alertnotify=echo %%s | mail -s &quot;Bitcoin Notificatio&quot; a
     </message>
     <message>
         <location line="+3"/>
-        <source>Error initializing database environment %s! To recover, BACKUP THAT DIRECTORY, then remove everything from it except for wallet.dat.</source>
-        <translation>Error initiando systema databasi %s! Ut restituas, CONSERVA ILLUM INDICEM PLICARUM, tunc remove omnes ex illo praeter wallet.dat.</translation>
-    </message>
-    <message>
-        <location line="+3"/>
         <source>Error: The transaction was rejected! This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.</source>
         <translation>Error: Transactio eiecta est! Hoc possit accidere si alii nummorum in cassidili tuo iam soluti sint, ut si usus es exemplar de wallet.dat et nummi soluti sunt in exemplari sed non hic notati ut soluti.</translation>
     </message>
@@ -2344,12 +2352,7 @@ exempli gratia: alertnotify=echo %%s | mail -s &quot;Bitcoin Notificatio&quot; a
         <translation>Constitue magnitudinem maximam transactionum magnae-prioritatis/parvae-mercedis in octetis/bytes (praedefinitum: 27000)</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Set the number of script verification threads (1-16, 0=auto, default: 0)</source>
-        <translation>Constitue numerum filorum verificationis scriptorum (1-16, 0=auto, praedefinitum: 0)</translation>
-    </message>
-    <message>
-        <location line="+2"/>
+        <location line="+6"/>
         <source>This is a pre-release test build - use at your own risk - do not use for mining or merchant applications</source>
         <translation>Hoc est prae-dimittum experimentala aedes - utere eo periculo tuo proprio - nolite utere fodendo vel applicationibus mercatoriis</translation>
     </message>
@@ -2389,7 +2392,7 @@ exempli gratia: alertnotify=echo %%s | mail -s &quot;Bitcoin Notificatio&quot; a
         <translation>Optiones creandi frustorum:</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>Connect only to the specified node(s)</source>
         <translation>Conecte sole ad nodos specificatos (vel nodum specificatum)</translation>
     </message>
@@ -2409,7 +2412,7 @@ exempli gratia: alertnotify=echo %%s | mail -s &quot;Bitcoin Notificatio&quot; a
         <translation>Visne reficere databasum frustorum iam?</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Error initializing block database</source>
         <translation>Error initiando databasem frustorum</translation>
     </message>
@@ -2509,7 +2512,12 @@ exempli gratia: alertnotify=echo %%s | mail -s &quot;Bitcoin Notificatio&quot; a
         <translation>Inveni paria utendo DNS quaerendo (praedefinitum: 1 nisi -connect)</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+1"/>
+        <source>Generate coins (default: 0)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location line="+2"/>
         <source>How many blocks to check at startup (default: 288, 0 = all)</source>
         <translation>Quot frusta proba ad initium (praedefinitum: 288, 0 = omnia)</translation>
     </message>
@@ -2519,14 +2527,19 @@ exempli gratia: alertnotify=echo %%s | mail -s &quot;Bitcoin Notificatio&quot; a
         <translation>Quam perfecta frustorum verificatio est (0-4, praedefinitum: 3)</translation>
     </message>
     <message>
-        <location line="+24"/>
+        <location line="+17"/>
+        <source>Not enough file descriptors available.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location line="+8"/>
         <source>Rebuild block chain index from current blk000??.dat files</source>
         <translation>Restituere indicem catenae frustorum ex activis plicis blk000??.dat</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Set the number of threads to service RPC calls (default: 4)</source>
-        <translation type="unfinished"/>
+        <translation>Constitue numerum filorum ad tractandum RPC postulationes (praedefinitum: 4)</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -2539,12 +2552,17 @@ exempli gratia: alertnotify=echo %%s | mail -s &quot;Bitcoin Notificatio&quot; a
         <translation>Verificante cassidilem...</translation>
     </message>
     <message>
-        <location line="-62"/>
+        <location line="-63"/>
         <source>Imports blocks from external blk000??.dat file</source>
         <translation>Importat frusta ab externa plica blk000??.dat</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-77"/>
+        <source>Set the number of script verification threads (up to 16, 0 = auto, &lt;0 = leave that many cores free, default: 0)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location line="+78"/>
         <source>Information</source>
         <translation>Informatio</translation>
     </message>
@@ -2569,7 +2587,7 @@ exempli gratia: alertnotify=echo %%s | mail -s &quot;Bitcoin Notificatio&quot; a
         <translation>Maxima magnitudo memoriae pro datis mittendis singulis conexionibus, &lt;n&gt;*1000 octetis/bytes (praedefinitum: 1000)</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>Only accept block chain matching built-in checkpoints (default: 1)</source>
         <translation>Tantum accipe catenam frustorum convenientem internis lapidibus (praedefinitum: 1)</translation>
     </message>
@@ -2684,12 +2702,12 @@ exempli gratia: alertnotify=echo %%s | mail -s &quot;Bitcoin Notificatio&quot; a
         <translation>Tessera pro conexionibus JSON-RPC</translation>
     </message>
     <message>
-        <location line="-67"/>
+        <location line="-66"/>
         <source>Allow JSON-RPC connections from specified IP address</source>
         <translation>Permitte conexionibus JSON-RPC ex inscriptione specificata</translation>
     </message>
     <message>
-        <location line="+76"/>
+        <location line="+75"/>
         <source>Send commands to node running on &lt;ip&gt; (default: 127.0.0.1)</source>
         <translation>Mitte mandata nodo operanti in &lt;ip&gt; (praedefinitum: 127.0.0.1)</translation>
     </message>
@@ -2729,12 +2747,12 @@ exempli gratia: alertnotify=echo %%s | mail -s &quot;Bitcoin Notificatio&quot; a
         <translation>Clavis privata daemonis moderans (praedefinitum: server.pem)</translation>
     </message>
     <message>
-        <location line="-153"/>
+        <location line="-150"/>
         <source>Acceptable ciphers (default: TLSv1+HIGH:!SSLv2:!aNULL:!eNULL:!AH:!3DES:@STRENGTH)</source>
         <translation>Acceptabiles cifrae (praedefinitum: TLSv1+HIGH:!SSLv2:!aNULL:!eNULL:!AH:!3DES:@STRENGTH)</translation>
     </message>
     <message>
-        <location line="+166"/>
+        <location line="+163"/>
         <source>This help message</source>
         <translation>Hic nuntius auxilii</translation>
     </message>
@@ -2749,12 +2767,12 @@ exempli gratia: alertnotify=echo %%s | mail -s &quot;Bitcoin Notificatio&quot; a
         <translation>Conecte per socks vicarium</translation>
     </message>
     <message>
-        <location line="-11"/>
+        <location line="-10"/>
         <source>Allow DNS lookups for -addnode, -seednode and -connect</source>
         <translation>Permitte quaerenda DNS pro -addnode, -seednode, et -connect</translation>
     </message>
     <message>
-        <location line="+56"/>
+        <location line="+54"/>
         <source>Loading addresses...</source>
         <translation>Legens inscriptiones...</translation>
     </message>
@@ -2769,12 +2787,12 @@ exempli gratia: alertnotify=echo %%s | mail -s &quot;Bitcoin Notificatio&quot; a
         <translation>Error legendi wallet.dat: Cassidili necesse est recentior versio Bitcoin</translation>
     </message>
     <message>
-        <location line="+87"/>
+        <location line="+88"/>
         <source>Wallet needed to be rewritten: restart Bitcoin to complete</source>
         <translation>Cassidili necesse erat rescribi: Repelle Bitcoin ut compleas</translation>
     </message>
     <message>
-        <location line="-89"/>
+        <location line="-90"/>
         <source>Error loading wallet.dat</source>
         <translation>Error legendi wallet.dat</translation>
     </message>
@@ -2784,7 +2802,7 @@ exempli gratia: alertnotify=echo %%s | mail -s &quot;Bitcoin Notificatio&quot; a
         <translation>Inscriptio -proxy non valida: &apos;%s&apos;</translation>
     </message>
     <message>
-        <location line="+49"/>
+        <location line="+50"/>
         <source>Unknown network specified in -onlynet: &apos;%s&apos;</source>
         <translation>Ignotum rete specificatum in -onlynet: &apos;%s&apos;</translation>
     </message>
@@ -2804,7 +2822,7 @@ exempli gratia: alertnotify=echo %%s | mail -s &quot;Bitcoin Notificatio&quot; a
         <translation>Non posse resolvere -externalip inscriptionem: &apos;%s&apos;</translation>
     </message>
     <message>
-        <location line="+44"/>
+        <location line="+43"/>
         <source>Invalid amount for -paytxfee=&lt;amount&gt;: &apos;%s&apos;</source>
         <translation>Quantitas non valida pro -paytxfee=&lt;quantitas&gt;: &apos;%s&apos;</translation>
     </message>
@@ -2824,7 +2842,7 @@ exempli gratia: alertnotify=echo %%s | mail -s &quot;Bitcoin Notificatio&quot; a
         <translation>Legens indicem frustorum...</translation>
     </message>
     <message>
-        <location line="-58"/>
+        <location line="-56"/>
         <source>Add a node to connect to and attempt to keep the connection open</source>
         <translation>Adice nodum cui conectere et conare sustinere conexionem apertam</translation>
     </message>
@@ -2834,7 +2852,7 @@ exempli gratia: alertnotify=echo %%s | mail -s &quot;Bitcoin Notificatio&quot; a
         <translation>Non posse conglutinare ad %s in hoc cumputatro.  Bitcoin probabiliter iam operatur.</translation>
     </message>
     <message>
-        <location line="+67"/>
+        <location line="+65"/>
         <source>Fee per KB to add to transactions you send</source>
         <translation>Merces per KB addere ad transactiones tu mittas</translation>
     </message>
@@ -2844,14 +2862,9 @@ exempli gratia: alertnotify=echo %%s | mail -s &quot;Bitcoin Notificatio&quot; a
         <translation>Legens cassidile...</translation>
     </message>
     <message>
-        <location line="-53"/>
+        <location line="-51"/>
         <source>Cannot downgrade wallet</source>
         <translation>Non posse cassidile regredi</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Cannot initialize keypool</source>
-        <translation>Non posse initiare stagnum clavium</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2864,22 +2877,22 @@ exempli gratia: alertnotify=echo %%s | mail -s &quot;Bitcoin Notificatio&quot; a
         <translation>Iterum perlegens...</translation>
     </message>
     <message>
-        <location line="-55"/>
+        <location line="-56"/>
         <source>Done loading</source>
         <translation>Completo lengendi</translation>
     </message>
     <message>
-        <location line="+79"/>
+        <location line="+80"/>
         <source>To use the %s option</source>
         <translation>Ut utaris optione %s</translation>
     </message>
     <message>
-        <location line="-71"/>
+        <location line="-72"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location line="-33"/>
+        <location line="-31"/>
         <source>You must set rpcpassword=&lt;password&gt; in the configuration file:
 %s
 If the file does not exist, create it with owner-readable-only file permissions.</source>
