@@ -10,6 +10,7 @@
 #include "init.h"
 #include "util.h"
 #include "ui_interface.h"
+#include "checkpoints.h"
 
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
@@ -100,6 +101,8 @@ void Shutdown()
     StopNode();
     {
         LOCK(cs_main);
+        if (pwalletMain)
+            pwalletMain->SetBestChain(CBlockLocator(pindexBest));
         if (pblocktree)
             pblocktree->Flush();
         if (pcoinsTip)
@@ -492,6 +495,7 @@ bool AppInit2(boost::thread_group& threadGroup)
     // ********************************************************* Step 2: parameter interactions
 
     fTestNet = GetBoolArg("-testnet");
+    Checkpoints::fEnabled = GetBoolArg("-checkpoints", true);
 
     if (mapArgs.count("-bind")) {
         // when specifying an explicit binding address, you want to listen on it
@@ -529,7 +533,7 @@ bool AppInit2(boost::thread_group& threadGroup)
     // Make sure enough file descriptors are available
     int nBind = std::max((int)mapArgs.count("-bind"), 1);
     nMaxConnections = GetArg("-maxconnections", 125);
-    nMaxConnections = std::max(std::min(nMaxConnections, FD_SETSIZE - nBind - MIN_CORE_FILEDESCRIPTORS), 0);
+    nMaxConnections = std::max(std::min(nMaxConnections, (int)(FD_SETSIZE - nBind - MIN_CORE_FILEDESCRIPTORS)), 0);
     int nFD = RaiseFileDescriptorLimit(nMaxConnections + MIN_CORE_FILEDESCRIPTORS);
     if (nFD < MIN_CORE_FILEDESCRIPTORS)
         return InitError(_("Not enough file descriptors available."));
@@ -862,6 +866,11 @@ bool AppInit2(boost::thread_group& threadGroup)
                     break;
                 }
 
+                // If the loaded chain has a wrong genesis, bail out immediately
+                // (we're likely using a testnet datadir, or the other way around).
+                if (!mapBlockIndex.empty() && pindexGenesisBlock == NULL)
+                    return InitError(_("Incorrect or no genesis block found. Wrong datadir for network?"));
+
                 // Initialize the block index (no-op if non-empty database was already loaded)
                 if (!InitBlockIndex()) {
                     strLoadError = _("Error initializing block database");
@@ -998,6 +1007,8 @@ bool AppInit2(boost::thread_group& threadGroup)
             if (!pwalletMain->SetAddressBookName(pwalletMain->vchDefaultKey.GetID(), ""))
                 strErrors << _("Cannot write default address") << "\n";
         }
+
+        pwalletMain->SetBestChain(CBlockLocator(pindexBest));
     }
 
     printf("%s", strErrors.str().c_str());
