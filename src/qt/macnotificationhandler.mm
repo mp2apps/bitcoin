@@ -7,7 +7,7 @@ void MacNotificationHandler::showNotification(const QString &title, const QStrin
 {
     // check if users OS has support for NSUserNotification
     if(this->hasUserNotificationCenterSupport()) {
-        // okay, seams like 10.8+
+        // okay, seems like 10.8+
         QByteArray utf8 = title.toUtf8();
         char* cString = (char *)utf8.constData();
         NSString *titleMac = [[NSString alloc] initWithUTF8String:cString];
@@ -16,12 +16,13 @@ void MacNotificationHandler::showNotification(const QString &title, const QStrin
         cString = (char *)utf8.constData();
         NSString *textMac = [[NSString alloc] initWithUTF8String:cString];
 
-        NSUserNotification *userNotification = [[NSUserNotification alloc] init];
+        // do everything weak linked (because we will keep <10.8 compatibility)
+        id userNotification = [[NSClassFromString(@"NSUserNotification") alloc] init];
+        [userNotification performSelector:@selector(setTitle:) withObject:titleMac];
+        [userNotification performSelector:@selector(setInformativeText:) withObject:textMac];
 
-        userNotification.title = titleMac;
-        userNotification.informativeText = textMac;
-
-        [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:userNotification];
+        id notificationCenterInstance = [NSClassFromString(@"NSUserNotificationCenter") performSelector:@selector(defaultUserNotificationCenter)];
+        [notificationCenterInstance performSelector:@selector(deliverNotification:) withObject:userNotification];
 
         [titleMac release];
         [textMac release];
@@ -30,7 +31,8 @@ void MacNotificationHandler::showNotification(const QString &title, const QStrin
 }
 
 // sendAppleScript just take a QString and executes it as apple script
-void MacNotificationHandler::sendAppleScript(const QString &script) {
+void MacNotificationHandler::sendAppleScript(const QString &script)
+{
     QByteArray utf8 = script.toUtf8();
     char* cString = (char *)utf8.constData();
     NSString *scriptApple = [[NSString alloc] initWithUTF8String:cString];
@@ -42,7 +44,8 @@ void MacNotificationHandler::sendAppleScript(const QString &script) {
     [scriptApple release];
 }
 
-bool MacNotificationHandler::hasUserNotificationCenterSupport(void) {
+bool MacNotificationHandler::hasUserNotificationCenterSupport(void)
+{
     Class possibleClass = NSClassFromString(@"NSUserNotificationCenter");
 
     // check if users OS has support for NSUserNotification
