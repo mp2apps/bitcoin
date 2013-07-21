@@ -1247,7 +1247,11 @@ bool CWallet::CreateTransaction(const vector<pair<CScript, int64> >& vecSend,
 
                     // Reserve a new key pair from key pool
                     CPubKey vchPubKey;
-                    assert(reservekey.GetReservedKey(vchPubKey)); // should never fail, as we just unlocked
+                    if (!reservekey.GetReservedKey(vchPubKey)) // might fail if key pool is empty
+                    {
+                        strFailReason = _("Key pool is empty");
+                        return false;
+                    }
 
                     // Fill a vout to ourself
                     // TODO: pass in scriptChange instead of reservekey so
@@ -1597,7 +1601,7 @@ void CWallet::ReserveKeyFromKeyPool(int64& nIndex, CKeyPool& keypool)
     {
         LOCK(cs_wallet);
 
-        if (!IsLocked())
+        if (fAutoFillKeyPool && !IsLocked())
             TopUpKeyPool();
 
         // Get the oldest key
@@ -1662,7 +1666,7 @@ bool CWallet::GetKeyFromPool(CPubKey& result)
         ReserveKeyFromKeyPool(nIndex, keypool);
         if (nIndex == -1)
         {
-            if (IsLocked()) return false;
+            if (!fAutoFillKeyPool || IsLocked()) return false;
             result = GenerateNewKey();
             return true;
         }
