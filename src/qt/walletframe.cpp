@@ -157,6 +157,13 @@ void WalletFrame::backupWallet()
         walletView->backupWallet();
 }
 
+void WalletFrame::refillKeyPool()
+{
+    WalletView *walletView = (WalletView*)walletStack->currentWidget();
+    if (walletView)
+        walletView->refillKeyPool();
+}
+
 void WalletFrame::changePassphrase()
 {
     WalletView *walletView = (WalletView*)walletStack->currentWidget();
