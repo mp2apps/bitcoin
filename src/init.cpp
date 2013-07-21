@@ -605,7 +605,8 @@ bool AppInit2(boost::thread_group& threadGroup)
             return false;
     }
 
-    if (filesystem::exists(GetDataDir() / strWalletFile))
+    bool fWalletAlreadyExists = filesystem::exists(GetDataDir() / strWalletFile);
+    if (fWalletAlreadyExists)
     {
         CDBEnv::VerifyResult r = bitdb.Verify(strWalletFile, CWalletDB::Recover);
         if (r == CDBEnv::RECOVER_OK)
@@ -890,9 +891,8 @@ bool AppInit2(boost::thread_group& threadGroup)
     uiInterface.InitMessage(_("Loading wallet..."));
 
     nStart = GetTimeMillis();
-    bool fFirstRun = true;
     pwalletMain = new CWallet(strWalletFile, !GetBoolArg("-noautofillkeypool", false));
-    DBErrors nLoadWalletRet = pwalletMain->LoadWallet(fFirstRun);
+    DBErrors nLoadWalletRet = pwalletMain->LoadWallet();
     if (nLoadWalletRet != DB_LOAD_OK)
     {
         if (nLoadWalletRet == DB_CORRUPT)
@@ -915,7 +915,7 @@ bool AppInit2(boost::thread_group& threadGroup)
             strErrors << _("Error loading wallet.dat") << "\n";
     }
 
-    if (GetBoolArg("-upgradewallet", fFirstRun))
+    if (GetBoolArg("-upgradewallet", !fWalletAlreadyExists))
     {
         int nMaxVersion = GetArg("-upgradewallet", 0);
         if (nMaxVersion == 0) // the -upgradewallet without argument case
@@ -931,17 +931,10 @@ bool AppInit2(boost::thread_group& threadGroup)
         pwalletMain->SetMaxVersion(nMaxVersion);
     }
 
-    if (fFirstRun)
+    if (!fWalletAlreadyExists)
     {
         // Create new keyUser and set as default key
         RandAddSeedPerfmon();
-
-        CPubKey newDefaultKey;
-        if (pwalletMain->GetKeyFromPool(newDefaultKey)) {
-            pwalletMain->SetDefaultKey(newDefaultKey);
-            if (!pwalletMain->SetAddressBook(pwalletMain->vchDefaultKey.GetID(), "", "receive"))
-                strErrors << _("Cannot write default address") << "\n";
-        }
 
         pwalletMain->SetBestChain(chainActive.GetLocator());
     }
