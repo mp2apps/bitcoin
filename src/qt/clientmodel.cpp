@@ -130,7 +130,7 @@ bool ClientModel::isTestNet() const
 
 bool ClientModel::inInitialBlockDownload() const
 {
-    return IsInitialBlockDownload();
+    return Checkpoints::IsInitialBlockDownload();
 }
 
 enum BlockSource ClientModel::getBlockSource() const

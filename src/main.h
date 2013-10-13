@@ -19,6 +19,7 @@
 #include "sync.h"
 #include "txmempool.h"
 #include "uint256.h"
+#include "checkpoints.h"
 
 #include <algorithm>
 #include <exception>
@@ -164,8 +165,6 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits);
 unsigned int ComputeMinWork(unsigned int nBase, int64_t nTime);
 /** Get the number of active peers */
 int GetNumBlocksOfPeers();
-/** Check whether we are doing an initial block download (synchronizing from disk or network) */
-bool IsInitialBlockDownload();
 /** Format a string that describes several potential problems detected by the core */
 std::string GetWarnings(std::string strFor);
 /** Retrieve a transaction (from memory pool, or from disk, if possible) */
@@ -361,7 +360,7 @@ public:
 
         // Flush stdio buffers and commit to disk before returning
         fflush(fileout);
-        if (!IsInitialBlockDownload())
+        if (!Checkpoints::IsInitialBlockDownload())
             FileCommit(fileout);
 
         return true;
