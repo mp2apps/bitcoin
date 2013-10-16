@@ -9,6 +9,7 @@
 #include "transactiontablemodel.h"
 #include "addressbookpage.h"
 #include "sendcoinsdialog.h"
+#include "receivecoinsdialog.h"
 #include "signverifymessagedialog.h"
 #include "clientmodel.h"
 #include "walletmodel.h"
@@ -53,17 +54,13 @@ WalletView::WalletView(QWidget *parent, BitcoinGUI *_gui):
     vbox->addLayout(hbox_buttons);
     transactionsPage->setLayout(vbox);
 
-    addressBookPage = new AddressBookPage(AddressBookPage::ForEditing, AddressBookPage::SendingTab);
-
-    receiveCoinsPage = new AddressBookPage(AddressBookPage::ForEditing, AddressBookPage::ReceivingTab);
-
+    receiveCoinsPage = new ReceiveCoinsDialog(gui);
     sendCoinsPage = new SendCoinsDialog(gui);
 
     signVerifyMessageDialog = new SignVerifyMessageDialog(gui);
 
     addWidget(overviewPage);
     addWidget(transactionsPage);
-    addWidget(addressBookPage);
     addWidget(receiveCoinsPage);
     addWidget(sendCoinsPage);
 
@@ -74,10 +71,6 @@ WalletView::WalletView(QWidget *parent, BitcoinGUI *_gui):
     // Double-clicking on a transaction on the transaction history page shows details
     connect(transactionView, SIGNAL(doubleClicked(QModelIndex)), transactionView, SLOT(showDetails()));
 
-    // Clicking on "Send Coins" in the address book sends you to the send coins tab
-    connect(addressBookPage, SIGNAL(sendCoins(QString)), this, SLOT(gotoSendCoinsPage(QString)));
-    // Clicking on "Verify Message" in the address book opens the verify message tab in the Sign/Verify Message dialog
-    connect(addressBookPage, SIGNAL(verifyMessage(QString)), this, SLOT(gotoVerifyMessageTab(QString)));
     // Clicking on "Sign Message" in the receive coins page opens the sign message tab in the Sign/Verify Message dialog
     connect(receiveCoinsPage, SIGNAL(signMessage(QString)), this, SLOT(gotoSignMessageTab(QString)));
     // Clicking on "Export" allows to export the transaction list
@@ -101,8 +94,6 @@ void WalletView::setClientModel(ClientModel *clientModel)
     if (clientModel)
     {
         overviewPage->setClientModel(clientModel);
-        addressBookPage->setOptionsModel(clientModel->getOptionsModel());
-        receiveCoinsPage->setOptionsModel(clientModel->getOptionsModel());
     }
 }
 
@@ -117,8 +108,7 @@ void WalletView::setWalletModel(WalletModel *walletModel)
         // Put transaction list in tabs
         transactionView->setModel(walletModel);
         overviewPage->setWalletModel(walletModel);
-        addressBookPage->setModel(walletModel->getAddressTableModel());
-        receiveCoinsPage->setModel(walletModel->getAddressTableModel());
+        receiveCoinsPage->setModel(walletModel);
         sendCoinsPage->setModel(walletModel);
         signVerifyMessageDialog->setModel(walletModel);
 
@@ -160,12 +150,6 @@ void WalletView::gotoHistoryPage()
 {
     gui->getHistoryAction()->setChecked(true);
     setCurrentWidget(transactionsPage);
-}
-
-void WalletView::gotoAddressBookPage()
-{
-    gui->getAddressBookAction()->setChecked(true);
-    setCurrentWidget(addressBookPage);
 }
 
 void WalletView::gotoReceiveCoinsPage()
@@ -272,4 +256,24 @@ void WalletView::unlockWallet()
         dlg.setModel(walletModel);
         dlg.exec();
     }
+}
+
+void WalletView::usedSendingAddresses()
+{
+    if(!walletModel)
+        return;
+    AddressBookPage *dlg = new AddressBookPage(AddressBookPage::ForEditing, AddressBookPage::SendingTab, this);
+    dlg->setModel(walletModel->getAddressTableModel());
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    dlg->show();
+}
+
+void WalletView::usedReceivingAddresses()
+{
+    if(!walletModel)
+        return;
+    AddressBookPage *dlg = new AddressBookPage(AddressBookPage::ForEditing, AddressBookPage::ReceivingTab, this);
+    dlg->setModel(walletModel->getAddressTableModel());
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    dlg->show();
 }

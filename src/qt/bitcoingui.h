@@ -13,7 +13,6 @@ class WalletModel;
 class WalletStack;
 class TransactionView;
 class OverviewPage;
-class AddressBookPage;
 class SendCoinsDialog;
 class SendCoinsRecipient;
 class SignVerifyMessageDialog;
@@ -65,7 +64,6 @@ public:
     // Todo: Use Qt signals for these
     QAction * getOverviewAction() { return overviewAction; }
     QAction * getHistoryAction() { return historyAction; }
-    QAction * getAddressBookAction() { return addressBookAction; }
     QAction * getReceiveCoinsAction() { return receiveCoinsAction; }
     QAction * getSendCoinsAction() { return sendCoinsAction; }
 
@@ -91,7 +89,8 @@ private:
     QAction *historyAction;
     QAction *quitAction;
     QAction *sendCoinsAction;
-    QAction *addressBookAction;
+    QAction *usedSendingAddressesAction;
+    QAction *usedReceivingAddressesAction;
     QAction *signMessageAction;
     QAction *verifyMessageAction;
     QAction *aboutAction;
@@ -164,8 +163,6 @@ private slots:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
-    /** Switch to address book page */
-    void gotoAddressBookPage();
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */

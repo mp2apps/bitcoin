@@ -72,11 +72,6 @@ void WalletFrame::gotoHistoryPage()
     walletStack->gotoHistoryPage();
 }
 
-void WalletFrame::gotoAddressBookPage()
-{
-    walletStack->gotoAddressBookPage();
-}
-
 void WalletFrame::gotoReceiveCoinsPage()
 {
     walletStack->gotoReceiveCoinsPage();
@@ -120,4 +115,14 @@ void WalletFrame::unlockWallet()
 void WalletFrame::setEncryptionStatus()
 {
     walletStack->setEncryptionStatus();
+}
+
+void WalletFrame::usedSendingAddresses()
+{
+    walletStack->usedSendingAddresses();
+}
+
+void WalletFrame::usedReceivingAddresses()
+{
+    walletStack->usedReceivingAddresses();
 }
