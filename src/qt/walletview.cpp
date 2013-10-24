@@ -69,8 +69,6 @@ WalletView::WalletView(QWidget *parent):
     // Double-clicking on a transaction on the transaction history page shows details
     connect(transactionView, SIGNAL(doubleClicked(QModelIndex)), transactionView, SLOT(showDetails()));
 
-    // Clicking on "Send Coins" in the address book sends you to the send coins tab
-    connect(addressBookPage, SIGNAL(sendCoins(QString)), this, SLOT(gotoSendCoinsPage(QString)));
     // Clicking on "Verify Message" in the address book opens the verify message tab in the Sign/Verify Message dialog
     connect(addressBookPage, SIGNAL(verifyMessage(QString)), this, SLOT(gotoVerifyMessageTab(QString)));
     // Clicking on "Sign Message" in the receive coins page opens the sign message tab in the Sign/Verify Message dialog
@@ -88,7 +86,11 @@ void WalletView::setBitcoinGUI(BitcoinGUI *gui)
     this->gui = gui;
     if(gui)
     {
+        // Clicking on a transaction in the overview page goes to the history page
         connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), gui, SLOT(gotoHistoryPage()));
+
+        // Clicking on "Send Coins" in the address book sends you to the send coins tab
+        connect(addressBookPage, SIGNAL(sendCoins(QString)), gui, SLOT(gotoSendCoinsPage(QString)));
     }
 }
 
@@ -203,7 +205,10 @@ bool WalletView::handlePaymentRequest(const SendCoinsRecipient& recipient)
     // URI has to be valid
     if (sendCoinsPage->handlePaymentRequest(recipient))
     {
-        gotoSendCoinsPage();
+        if(gui)
+        {
+            gui->gotoSendCoinsPage();
+        }
         emit showNormalIfMinimized();
         return true;
     }
