@@ -305,14 +305,7 @@ static const CRPCCommand vRPCCommands[] =
 
 CRPCTable::CRPCTable()
 {
-    unsigned int vcidx;
-    for (vcidx = 0; vcidx < (sizeof(vRPCCommands) / sizeof(vRPCCommands[0])); vcidx++)
-    {
-        const CRPCCommand *pcmd;
-
-        pcmd = &vRPCCommands[vcidx];
-        mapCommands[pcmd->name] = pcmd;
-    }
+    RegisterMethodList(vRPCCommands, (sizeof(vRPCCommands) / sizeof(vRPCCommands[0])));
 }
 
 const CRPCCommand *CRPCTable::operator[](string name) const
@@ -323,6 +316,17 @@ const CRPCCommand *CRPCTable::operator[](string name) const
     return (*it).second;
 }
 
+void CRPCTable::RegisterMethodList(const CRPCCommand *vec, size_t count)
+{
+    unsigned int vcidx;
+    for (vcidx = 0; vcidx < count; vcidx++)
+    {
+        const CRPCCommand *pcmd;
+
+        pcmd = &vec[vcidx];
+        mapCommands[pcmd->name] = pcmd;
+    }
+}
 
 bool HTTPAuthorized(map<string, string>& mapHeaders)
 {
@@ -851,4 +855,5 @@ std::string HelpExampleRpc(string methodname, string args){
         "\"method\": \"" + methodname + "\", \"params\": [" + args + "] }' -H 'content-type: text/plain;' http://127.0.0.1:8332/\n";
 }
 
-const CRPCTable tableRPC;
+CRPCTable tableRPC;
+

@@ -68,6 +68,11 @@ public:
     std::string help(std::string name) const;
 
     /**
+     * Register an array of RPC methods.
+     */
+    void RegisterMethodList(const CRPCCommand *vRPCCommands, size_t count);
+
+    /**
      * Execute a method.
      * @param method   Method to execute
      * @param params   Array of arguments (JSON objects)
@@ -77,7 +82,7 @@ public:
     json_spirit::Value execute(const std::string &method, const json_spirit::Array &params) const;
 };
 
-extern const CRPCTable tableRPC;
+extern CRPCTable tableRPC;
 
 //
 // Utilities: convert hex-encoded Values
