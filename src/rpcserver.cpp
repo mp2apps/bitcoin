@@ -149,10 +149,6 @@ string CRPCTable::help(string strCommand) const
             continue;
         if (strCommand != "" && strMethod != strCommand)
             continue;
-#ifdef ENABLE_WALLET
-        if (pcmd->reqWallet && !pwalletMain)
-            continue;
-#endif
 
         try
         {
@@ -754,10 +750,6 @@ json_spirit::Value CRPCTable::execute(const std::string &strMethod, const json_s
     const CRPCCommand *pcmd = tableRPC[strMethod];
     if (!pcmd)
         throw JSONRPCError(RPC_METHOD_NOT_FOUND, "Method not found");
-#ifdef ENABLE_WALLET
-    if (pcmd->reqWallet && !pwalletMain)
-        throw JSONRPCError(RPC_METHOD_NOT_FOUND, "Method not found (disabled)");
-#endif
 
     // Observe safe mode
     string strWarning = GetWarnings("rpc");

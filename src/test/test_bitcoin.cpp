@@ -3,6 +3,7 @@
 
 
 #include "db.h"
+#include "init.h"
 #include "main.h"
 #include "txdb.h"
 #include "ui_interface.h"
@@ -14,11 +15,11 @@
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 
-
-CWallet* pwalletMain;
+CWalletBackendInterface *pwalletBackend;
 
 extern bool fPrintToConsole;
 extern void noui_connect();
+extern CWalletBackendInterface *GetWalletBackend();
 
 struct TestingSetup {
     CCoinsViewDB *pcoinsdbview;
@@ -43,7 +44,8 @@ struct TestingSetup {
         pwalletMain = new CWallet("wallet.dat");
         pwalletMain->LoadWallet(fFirstRun);
         RegisterWallet(pwalletMain);
-        WalletRegisterRPCCommands();
+        pwalletBackend = GetWalletBackend();
+        pwalletBackend->RegisterRPCCommands();
 #endif
         nScriptCheckThreads = 3;
         for (int i=0; i < nScriptCheckThreads-1; i++)

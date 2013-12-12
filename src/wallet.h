@@ -893,6 +893,7 @@ private:
     std::vector<char> _ssExtra;
 };
 
-extern void WalletRegisterRPCCommands();
+extern std::string strWalletFile;
+extern CWallet* pwalletMain;
 
 #endif
