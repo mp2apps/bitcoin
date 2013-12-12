@@ -67,6 +67,7 @@ std::string DecodeDumpString(const std::string &str) {
 
 Value importprivkey(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() < 1 || params.size() > 3)
         throw runtime_error(
             "importprivkey \"bitcoinprivkey\" ( \"label\" rescan )\n"
@@ -128,6 +129,7 @@ Value importprivkey(const Array& params, bool fHelp)
 
 Value importwallet(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() != 1)
         throw runtime_error(
             "importwallet \"filename\"\n"
@@ -218,6 +220,7 @@ Value importwallet(const Array& params, bool fHelp)
 
 Value dumpprivkey(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() != 1)
         throw runtime_error(
             "dumpprivkey \"bitcoinaddress\"\n"
@@ -251,6 +254,7 @@ Value dumpprivkey(const Array& params, bool fHelp)
 
 Value dumpwallet(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() != 1)
         throw runtime_error(
             "dumpwallet \"filename\"\n"

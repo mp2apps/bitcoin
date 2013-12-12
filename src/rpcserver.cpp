@@ -822,21 +822,12 @@ json_spirit::Value CRPCTable::execute(const std::string &strMethod, const json_s
         Value result;
         {
             if (pcmd->threadSafe)
-                result = pcmd->actor(params, false);
-#ifdef ENABLE_WALLET
-            else if (!pwalletMain) {
-                LOCK(cs_main);
+            {
                 result = pcmd->actor(params, false);
             } else {
-                LOCK2(cs_main, pwalletMain->cs_wallet);
-                result = pcmd->actor(params, false);
-            }
-#else // ENABLE_WALLET
-            else {
                 LOCK(cs_main);
                 result = pcmd->actor(params, false);
             }
-#endif // !ENABLE_WALLET
         }
         return result;
     }

@@ -68,6 +68,7 @@ string AccountFromValue(const Value& value)
 
 Value getnewaddress(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() > 1)
         throw runtime_error(
             "getnewaddress ( \"account\" )\n"
@@ -145,6 +146,7 @@ CBitcoinAddress GetAccountAddress(string strAccount, bool bForceNew=false)
 
 Value getaccountaddress(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() != 1)
         throw runtime_error(
             "getaccountaddress \"account\"\n"
@@ -173,6 +175,7 @@ Value getaccountaddress(const Array& params, bool fHelp)
 
 Value getrawchangeaddress(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() > 1)
         throw runtime_error(
             "getrawchangeaddress\n"
@@ -203,6 +206,7 @@ Value getrawchangeaddress(const Array& params, bool fHelp)
 
 Value setaccount(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() < 1 || params.size() > 2)
         throw runtime_error(
             "setaccount \"bitcoinaddress\" \"account\"\n"
@@ -240,6 +244,7 @@ Value setaccount(const Array& params, bool fHelp)
 
 Value getaccount(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() != 1)
         throw runtime_error(
             "getaccount \"bitcoinaddress\"\n"
@@ -267,6 +272,7 @@ Value getaccount(const Array& params, bool fHelp)
 
 Value getaddressesbyaccount(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() != 1)
         throw runtime_error(
             "getaddressesbyaccount \"account\"\n"
@@ -299,6 +305,7 @@ Value getaddressesbyaccount(const Array& params, bool fHelp)
 
 Value sendtoaddress(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() < 2 || params.size() > 4)
         throw runtime_error(
             "sendtoaddress \"bitcoinaddress\" amount ( \"comment\" \"comment-to\" )\n"
@@ -345,6 +352,7 @@ Value sendtoaddress(const Array& params, bool fHelp)
 
 Value listaddressgroupings(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp)
         throw runtime_error(
             "listaddressgroupings\n"
@@ -392,6 +400,7 @@ Value listaddressgroupings(const Array& params, bool fHelp)
 
 Value signmessage(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() != 2)
         throw runtime_error(
             "signmessage \"bitcoinaddress\" \"message\"\n"
@@ -443,6 +452,7 @@ Value signmessage(const Array& params, bool fHelp)
 
 Value verifymessage(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() != 3)
         throw runtime_error(
             "verifymessage \"bitcoinaddress\" \"signature\" \"message\"\n"
@@ -496,6 +506,7 @@ Value verifymessage(const Array& params, bool fHelp)
 
 Value getreceivedbyaddress(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() < 1 || params.size() > 2)
         throw runtime_error(
             "getreceivedbyaddress \"bitcoinaddress\" ( minconf )\n"
@@ -550,6 +561,7 @@ Value getreceivedbyaddress(const Array& params, bool fHelp)
 
 Value getreceivedbyaccount(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() < 1 || params.size() > 2)
         throw runtime_error(
             "getreceivedbyaccount \"account\" ( minconf )\n"
@@ -634,6 +646,7 @@ int64_t GetAccountBalance(const string& strAccount, int nMinDepth)
 
 Value getbalance(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() > 2)
         throw runtime_error(
             "getbalance ( \"account\" minconf )\n"
@@ -702,6 +715,7 @@ Value getbalance(const Array& params, bool fHelp)
 
 Value movecmd(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() < 3 || params.size() > 5)
         throw runtime_error(
             "move \"fromaccount\" \"toaccount\" amount ( minconf \"comment\" )\n"
@@ -767,6 +781,7 @@ Value movecmd(const Array& params, bool fHelp)
 
 Value sendfrom(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() < 3 || params.size() > 6)
         throw runtime_error(
             "sendfrom \"fromaccount\" \"tobitcoinaddress\" amount ( minconf \"comment\" \"comment-to\" )\n"
@@ -828,6 +843,7 @@ Value sendfrom(const Array& params, bool fHelp)
 
 Value sendmany(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() < 2 || params.size() > 4)
         throw runtime_error(
             "sendmany \"fromaccount\" {\"address\":amount,...} ( minconf \"comment\" )\n"
@@ -965,6 +981,7 @@ static CScript _createmultisig(const Array& params)
 
 Value addmultisigaddress(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() < 2 || params.size() > 3)
     {
         string msg = "addmultisigaddress nrequired [\"key\",...] ( \"account\" )\n"
@@ -1164,6 +1181,7 @@ Value ListReceived(const Array& params, bool fByAccounts)
 
 Value listreceivedbyaddress(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() > 2)
         throw runtime_error(
             "listreceivedbyaddress ( minconf includeempty )\n"
@@ -1194,6 +1212,7 @@ Value listreceivedbyaddress(const Array& params, bool fHelp)
 
 Value listreceivedbyaccount(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() > 2)
         throw runtime_error(
             "listreceivedbyaccount ( minconf includeempty )\n"
@@ -1308,6 +1327,7 @@ void AcentryToJSON(const CAccountingEntry& acentry, const string& strAccount, Ar
 
 Value listtransactions(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() > 3)
         throw runtime_error(
             "listtransactions ( \"account\" count from )\n"
@@ -1416,6 +1436,7 @@ Value listtransactions(const Array& params, bool fHelp)
 
 Value listaccounts(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() > 1)
         throw runtime_error(
             "listaccounts ( minconf )\n"
@@ -1483,6 +1504,7 @@ Value listaccounts(const Array& params, bool fHelp)
 
 Value listsinceblock(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp)
         throw runtime_error(
             "listsinceblock ( \"blockhash\" target-confirmations )\n"
@@ -1562,6 +1584,7 @@ Value listsinceblock(const Array& params, bool fHelp)
 
 Value gettransaction(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() != 1)
         throw runtime_error(
             "gettransaction \"txid\"\n"
@@ -1623,6 +1646,7 @@ Value gettransaction(const Array& params, bool fHelp)
 
 Value backupwallet(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() != 1)
         throw runtime_error(
             "backupwallet \"destination\"\n"
@@ -1644,6 +1668,7 @@ Value backupwallet(const Array& params, bool fHelp)
 
 Value keypoolrefill(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() > 1)
         throw runtime_error(
             "keypoolrefill ( newsize )\n"
@@ -1683,6 +1708,7 @@ static void LockWallet(CWallet* pWallet)
 
 Value walletpassphrase(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (pwalletMain->IsCrypted() && (fHelp || params.size() != 2))
         throw runtime_error(
             "walletpassphrase \"passphrase\" timeout\n"
@@ -1727,9 +1753,11 @@ Value walletpassphrase(const Array& params, bool fHelp)
     pwalletMain->TopUpKeyPool();
 
     int64_t nSleepTime = params[1].get_int64();
-    LOCK(cs_nWalletUnlockTime);
-    nWalletUnlockTime = GetTime() + nSleepTime;
-    RPCRunLater("lockwallet", boost::bind(LockWallet, pwalletMain), nSleepTime);
+    {
+        LOCK(cs_nWalletUnlockTime);
+        nWalletUnlockTime = GetTime() + nSleepTime;
+        RPCRunLater("lockwallet", boost::bind(LockWallet, pwalletMain), nSleepTime);
+    }
 
     return Value::null;
 }
@@ -1737,6 +1765,7 @@ Value walletpassphrase(const Array& params, bool fHelp)
 
 Value walletpassphrasechange(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (pwalletMain->IsCrypted() && (fHelp || params.size() != 2))
         throw runtime_error(
             "walletpassphrasechange \"oldpassphrase\" \"newpassphrase\"\n"
@@ -1778,6 +1807,7 @@ Value walletpassphrasechange(const Array& params, bool fHelp)
 
 Value walletlock(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (pwalletMain->IsCrypted() && (fHelp || params.size() != 0))
         throw runtime_error(
             "walletlock\n"
@@ -1812,6 +1842,7 @@ Value walletlock(const Array& params, bool fHelp)
 
 Value encryptwallet(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (!pwalletMain->IsCrypted() && (fHelp || params.size() != 1))
         throw runtime_error(
             "encryptwallet \"passphrase\"\n"
@@ -1900,6 +1931,7 @@ public:
 
 Value validateaddress(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() != 1)
         throw runtime_error(
             "validateaddress \"bitcoinaddress\"\n"
@@ -1945,6 +1977,7 @@ Value validateaddress(const Array& params, bool fHelp)
 
 Value lockunspent(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() < 1 || params.size() > 2)
         throw runtime_error(
             "lockunspent unlock [{\"txid\":\"txid\",\"vout\":n},...]\n"
@@ -2024,6 +2057,7 @@ Value lockunspent(const Array& params, bool fHelp)
 
 Value listlockunspent(const Array& params, bool fHelp)
 {
+    LOCK(pwalletMain->cs_wallet);
     if (fHelp || params.size() > 0)
         throw runtime_error(
             "listlockunspent\n"
