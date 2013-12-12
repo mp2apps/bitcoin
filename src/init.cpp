@@ -1039,8 +1039,10 @@ bool AppInit2(boost::thread_group& threadGroup, bool fForceServer)
 #endif
 
     StartNode(threadGroup);
+#ifdef ENABLE_WALLET
     // InitRPCMining is needed here so getwork/getblocktemplate in the GUI debug console works properly.
     InitRPCMining();
+#endif
     if (fServer)
         StartRPCThreads();
 
