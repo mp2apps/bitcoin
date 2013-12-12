@@ -148,6 +148,10 @@ void SyncWithWallets(const uint256 &hash, const CTransaction &tx, const CBlock *
     g_signals.SyncTransaction(hash, tx, pblock);
 }
 
+void SetWalletsBestChain(const CBlockLocator &locator) {
+    g_signals.SetBestChain(locator);
+}
+
 //////////////////////////////////////////////////////////////////////////////
 //
 // Registration of network node signals.
@@ -1853,7 +1857,7 @@ bool SetBestChain(CValidationState &state, CBlockIndex* pindexNew)
 
     // Update best block in wallet (so we can detect restored wallets)
     if ((pindexNew->nHeight % 20160) == 0 || (!fIsInitialDownload && (pindexNew->nHeight % 144) == 0))
-        g_signals.SetBestChain(chainActive.GetLocator(pindexNew));
+        SetWalletsBestChain(chainActive.GetLocator(pindexNew));
 
     // New best block
     nTimeBestReceived = GetTime();

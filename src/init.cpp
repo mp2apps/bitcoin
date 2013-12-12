@@ -123,10 +123,7 @@ void Shutdown()
     UnregisterNodeSignals(GetNodeSignals());
     {
         LOCK(cs_main);
-#ifdef ENABLE_WALLET
-        if (pwalletMain)
-            pwalletMain->SetBestChain(chainActive.GetLocator());
-#endif
+        SetWalletsBestChain(chainActive.GetLocator());
         if (pblocktree)
             pblocktree->Flush();
         if (pcoinsTip)

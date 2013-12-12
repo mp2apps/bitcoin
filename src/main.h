@@ -122,6 +122,8 @@ void UnregisterWallet(CWalletInterface* pwalletIn);
 void UnregisterAllWallets();
 /** Push an updated transaction to all registered wallets */
 void SyncWithWallets(const uint256 &hash, const CTransaction& tx, const CBlock* pblock = NULL);
+/** Push a new best chain to all registered wallets */
+void SetWalletsBestChain(const CBlockLocator &locator);
 
 /** Register with a network node to receive its signals */
 void RegisterNodeSignals(CNodeSignals& nodeSignals);
