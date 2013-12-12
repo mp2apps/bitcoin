@@ -43,6 +43,7 @@ struct TestingSetup {
         pwalletMain = new CWallet("wallet.dat");
         pwalletMain->LoadWallet(fFirstRun);
         RegisterWallet(pwalletMain);
+        WalletRegisterRPCCommands();
 #endif
         nScriptCheckThreads = 3;
         for (int i=0; i < nScriptCheckThreads-1; i++)

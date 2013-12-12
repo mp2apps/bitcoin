@@ -67,6 +67,7 @@ libbitcoin_wallet_a_SOURCES = \
   rpcwallet.cpp \
   wallet.cpp \
   walletdb.cpp \
+  walletinit.cpp \
   internalminer.cpp \
   $(BITCOIN_CORE_H)
 

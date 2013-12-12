@@ -10,9 +10,6 @@
 #include "main.h"
 #include "util.h"
 #include "ui_interface.h"
-#ifdef ENABLE_WALLET
-#include "wallet.h"
-#endif
 
 #include <boost/algorithm/string.hpp>
 #include <boost/asio.hpp>
@@ -253,54 +250,6 @@ static const CRPCCommand vRPCCommands[] =
     { "getmininginfo",          &getmininginfo,          true,      false,      false },
     { "getblocktemplate",       &getblocktemplate,       true,      false,      false },
     { "submitblock",            &submitblock,            false,     false,      false },
-
-#ifdef ENABLE_WALLET
-    /* Wallet */
-    { "getnewaddress",          &getnewaddress,          true,      false,      true },
-    { "getaccountaddress",      &getaccountaddress,      true,      false,      true },
-    { "getrawchangeaddress",    &getrawchangeaddress,    true,      false,      true },
-    { "setaccount",             &setaccount,             true,      false,      true },
-    { "getaccount",             &getaccount,             false,     false,      true },
-    { "getaddressesbyaccount",  &getaddressesbyaccount,  true,      false,      true },
-    { "sendtoaddress",          &sendtoaddress,          false,     false,      true },
-    { "getreceivedbyaddress",   &getreceivedbyaddress,   false,     false,      true },
-    { "getreceivedbyaccount",   &getreceivedbyaccount,   false,     false,      true },
-    { "listreceivedbyaddress",  &listreceivedbyaddress,  false,     false,      true },
-    { "listreceivedbyaccount",  &listreceivedbyaccount,  false,     false,      true },
-    { "backupwallet",           &backupwallet,           true,      false,      true },
-    { "keypoolrefill",          &keypoolrefill,          true,      false,      true },
-    { "walletpassphrase",       &walletpassphrase,       true,      false,      true },
-    { "walletpassphrasechange", &walletpassphrasechange, false,     false,      true },
-    { "walletlock",             &walletlock,             true,      false,      true },
-    { "encryptwallet",          &encryptwallet,          false,     false,      true },
-    { "validateaddress",        &validateaddress,        true,      false,      false },
-    { "getbalance",             &getbalance,             false,     false,      true },
-    { "move",                   &movecmd,                false,     false,      true },
-    { "sendfrom",               &sendfrom,               false,     false,      true },
-    { "sendmany",               &sendmany,               false,     false,      true },
-    { "addmultisigaddress",     &addmultisigaddress,     false,     false,      true },
-    { "createmultisig",         &createmultisig,         true,      true ,      false },
-    { "gettransaction",         &gettransaction,         false,     false,      true },
-    { "listtransactions",       &listtransactions,       false,     false,      true },
-    { "listaddressgroupings",   &listaddressgroupings,   false,     false,      true },
-    { "signmessage",            &signmessage,            false,     false,      true },
-    { "verifymessage",          &verifymessage,          false,     false,      false },
-    { "listaccounts",           &listaccounts,           false,     false,      true },
-    { "listsinceblock",         &listsinceblock,         false,     false,      true },
-    { "dumpprivkey",            &dumpprivkey,            true,      false,      true },
-    { "dumpwallet",             &dumpwallet,             true,      false,      true },
-    { "importprivkey",          &importprivkey,          false,     false,      true },
-    { "importwallet",           &importwallet,           false,     false,      true },
-    { "listunspent",            &listunspent,            false,     false,      true },
-    { "lockunspent",            &lockunspent,            false,     false,      true },
-    { "listlockunspent",        &listlockunspent,        false,     false,      true },
-
-    /* Wallet-enabled mining */
-    { "getgenerate",            &getgenerate,            true,      false,      false },
-    { "setgenerate",            &setgenerate,            true,      true,       false },
-    { "gethashespersec",        &gethashespersec,        true,      false,      false },
-    { "getwork",                &getwork,                true,      false,      true },
-#endif // ENABLE_WALLET
 };
 
 CRPCTable::CRPCTable()
